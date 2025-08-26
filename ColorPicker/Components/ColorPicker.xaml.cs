@@ -1,28 +1,36 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
-using System.Windows.Threading;
+using System.Windows.Media.Animation;
+using ColorPicker.Models;
+using ColorPicker.Services;
+using FontAwesome.WPF;
 
 namespace ColorPicker.Components;
 
 public partial class ColorPicker : UserControl
 {
-    // Import Windows API
-    [DllImport("user32.dll")]
-    static extern IntPtr GetDC(IntPtr hWnd);
+    [LibraryImport("user32.dll")]
+    private static partial IntPtr GetDC(IntPtr hWnd);
 
-    [DllImport("gdi32.dll")]
-    static extern uint GetPixel(IntPtr hdc, int nXPos, int nYPos);
+    [LibraryImport("gdi32.dll")]
+    private static partial uint GetPixel(IntPtr hdc, int nXPos, int nYPos);
 
-    [DllImport("user32.dll")]
-    static extern int ReleaseDC(IntPtr hWnd, IntPtr hDC);
+    [LibraryImport("user32.dll")]
+    private static partial int ReleaseDC(IntPtr hWnd, IntPtr hDC);
 
-    [DllImport("user32.dll")]
+    [LibraryImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
-    static extern bool GetCursorPos(out POINT lpPoint);
+    private static partial bool GetCursorPos(out POINT lpPoint);
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct POINT
+    private struct POINT
     {
         public int X;
         public int Y;
@@ -32,48 +40,508 @@ public partial class ColorPicker : UserControl
 
 
 
+    
+    public event PropertyChangedEventHandler? PropertyChanged;
+    private bool _isEnabled = true;
+    private bool _isMinimized = false;
+    private bool _isMessageOpen = false;
+    private bool _isDropdownMenuOpen = false;
+    private DateTime _lastUpdate = DateTime.UtcNow;
+    private SolidColorBrush _currentBrush = new(Colors.White);
+    private SolidColorBrush _invertedBrush = new(Colors.Black);
+    private ColorTypes _colorType = ColorTypes.HEX;
 
-    private DispatcherTimer _timer;
-    private SolidColorBrush _brush = new SolidColorBrush();
-    private Color _lastColor;
+    private static string CurrentTextContent { get; set; } = "#FFFFFF";
+    public ColorTypes CurrentColorType // HEX, RGB...
+    {
+        get => _colorType;
+        set
+        {
+            if (_colorType != value)
+            {
+                _colorType = value;
+                OnPropertyChanged(nameof(CurrentColorType));
+            }
+        }
+    }
+
+    private System.Drawing.Rectangle _appWindowPos;
+    public void UpdateAppWindowPos(Window window)
+    {
+        _appWindowPos = new System.Drawing.Rectangle(
+            (int)window.Left,
+            (int)window.Top,
+            (int)window.Width,
+            (int)window.Height
+        );
+    }
+
+    protected void OnPropertyChanged(string name) =>
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+
+    private CancellationTokenSource? _messageCts;
 
 
+
+
+
+
+
+    
 
     public ColorPicker()
     {
         InitializeComponent();
-        //SetWindowSizeAndPosition();
-        ColorPreview.Fill = _brush;
+        DataContext = this;
 
-        // Setup a timer to update ~240 Hz (4 ms)
-        /* _timer = new DispatcherTimer();
-        _timer.Interval = TimeSpan.FromMilliseconds(4.16);
-        _timer.Tick += UpdateColor;
-        _timer.Start(); */
+        Loaded += OnLoaded;
+        Unloaded += OnUnloaded;
+        CompositionTarget.Rendering += OnNewFrame!;
+
+        DropdownButton.ContextMenu.Closed += (s, e) =>
+        {
+            _isDropdownMenuOpen = false;
+        };
     }
-    
-    private void UpdateColor(object? sender, EventArgs e)
+
+    private void OnNewFrame(object sender, EventArgs e)
     {
+        // Clamp to max 120fps color updates
+        const int minInterval = 1000 / 120;
+
+        if (!_isEnabled || _isMinimized)
+            return;
+
+        if (DateTime.UtcNow < _lastUpdate.AddMilliseconds(minInterval))
+            return;
+        _lastUpdate = DateTime.UtcNow;
+
         if (!GetCursorPos(out POINT p))
             return;
 
-        IntPtr hdc = GetDC(IntPtr.Zero);
-        uint colorRef = GetPixel(hdc, p.X, p.Y);
-        ReleaseDC(IntPtr.Zero, hdc);
+        if (_appWindowPos.Contains(p.X, p.Y))
+            return;
 
-        // Extract RGB
+        UpdateColors(p); 
+    }
+
+    private void OnLoaded(object? sender, RoutedEventArgs e)
+    {
+        Window window = Window.GetWindow(this)!;
+        window.PreviewKeyDown += Keyboard_Click;
+
+        CurrentColorType = Properties.Settings.Default.ColorType switch // todo colorclass?
+        {
+            "RGB" => ColorTypes.RGB,
+            "HEX" => ColorTypes.HEX,
+            "HSL" => ColorTypes.HSL,
+            "HSV" => ColorTypes.HSV,
+            "CMYK" => ColorTypes.CMYK,
+            _ => ColorTypes.HEX,
+        };
+
+        UpdateColorsStatic(); 
+        DB.Print($"Loaded color type: {CurrentColorType}");
+    }
+
+    private void OnUnloaded(object? sender, RoutedEventArgs e)
+    {
+        Window window = Window.GetWindow(this)!;
+        window.PreviewKeyDown -= Keyboard_Click;
+    }
+
+    private void DropdownButton_Click(object sender, MouseButtonEventArgs e)
+    {
+        DropdownButton.ContextMenu.PlacementTarget = DropdownButton;
+        DropdownButton.ContextMenu.Placement = PlacementMode.Bottom;
+        DropdownButton.ContextMenu.HorizontalOffset = 0;
+        DropdownButton.ContextMenu.VerticalOffset = 0;
+        DropdownButton.ContextMenu.IsOpen = true;
+        _isDropdownMenuOpen = true;
+    }
+
+    private void DropdownMouse_Click(object sender, MouseButtonEventArgs e)
+    {
+        var mousePos = e.GetPosition((IInputElement)sender);
+
+        DropdownButton.ContextMenu.PlacementTarget = (UIElement)sender;
+        DropdownButton.ContextMenu.Placement = PlacementMode.Relative;
+        DropdownButton.ContextMenu.HorizontalOffset = mousePos.X;
+        DropdownButton.ContextMenu.VerticalOffset = mousePos.Y;
+        DropdownButton.ContextMenu.IsOpen = true;
+        _isDropdownMenuOpen = true;
+    }
+
+    private void DropdownMenuItem_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is MenuItem menuItem && menuItem.Tag is ColorTypes colorType)
+        {
+            CurrentColorType = colorType;
+            DB.Print($"Color type set: {CurrentColorType}");
+            UpdateColorsStatic();
+        }
+        e.Handled = true;
+    }
+
+    private void CopyButton_Click(object sender, RoutedEventArgs e)
+    {
+        CopyColorToClipboard();
+        UpdateMessageColor(_invertedBrush);
+        e.Handled = true;
+    }
+
+    private void ToggleRunning_Click(object sender, MouseButtonEventArgs e)
+    {
+        ToggleSampling();
+        e.Handled = true;
+    }
+    
+    private void ColorView_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+    {
+        if (_isDropdownMenuOpen) return;
+
+        // Ignore clicks that hit a button
+        if (e.OriginalSource is DependencyObject source)
+        {
+            while (source != null && source != ColorView)
+            {
+                if (source is Button || source is Border) return;
+                source = VisualTreeHelper.GetParent(source);
+            }
+        }
+
+        ToggleRunning_Click(sender, e);
+    }
+
+    private void Keyboard_Click(object sender, KeyEventArgs e)
+    {   
+        // Only trigger if mouse is over app window
+        if (!this.IsMouseOver)
+        {
+            e.Handled = true;
+            return;
+        }
+
+        // CTRL + C
+        if (e.Key == Key.C && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
+        {   
+            CopyColorToClipboard();
+            UpdateMessageColor(_invertedBrush);
+        } 
+
+        // Spacebar 
+        if (e.Key == Key.Space )
+        {
+            ToggleSampling();
+        }
+
+        e.Handled = true;
+    }
+
+    public void ToggleSampling()
+    {
+        _isEnabled = !_isEnabled;
+        SetIsRunningIcon(_isEnabled);
+        DB.Print($"Color sampling: {_isEnabled}");
+    }
+
+    public void SetSampling(bool enabled)
+    {
+        _isEnabled = enabled;
+        SetIsRunningIcon(_isEnabled);
+        DB.Print($"Color sampling: {_isEnabled}");
+    }
+
+    public void SetIsMinimized(bool minimized)
+    {
+        _isMinimized = minimized;
+        DB.Print($"Window minimized: {_isMinimized}");
+    }
+
+    private void SetIsRunningIcon(bool running)
+    {
+        IsRunningIcon.Icon = running ? FontAwesomeIcon.Pause : FontAwesomeIcon.Play;
+    }
+
+    public async Task ShowMessageAsync(string message, int durationMs)
+    {
+        _isMessageOpen = true;
+
+        // Cancel any previous messages
+        _messageCts?.Cancel();
+        _messageCts = new CancellationTokenSource();
+        var token = _messageCts.Token;
+
+        Message.Text = message;
+
+        // Fade in
+        var fadeIn = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(1));
+        Message.BeginAnimation(OpacityProperty, fadeIn);
+
+        // Fade out
+        try
+        {
+            await Task.Delay(durationMs, token);
+            var fadeOut = new DoubleAnimation(1, 0, TimeSpan.FromMilliseconds(250));
+            Message.BeginAnimation(OpacityProperty, fadeOut);
+        }
+        catch (TaskCanceledException) { }
+
+        _isMessageOpen = false;
+    }
+
+
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    private void UpdateColors(POINT p)
+    {
+        uint colorRef = GetColorAtPos(p);
+
         byte r = (byte)(colorRef & 0x000000FF);
         byte g = (byte)((colorRef & 0x0000FF00) >> 8);
         byte b = (byte)((colorRef & 0x00FF0000) >> 16);
 
-        var newColor = Color.FromRgb(r, g, b);
+        if (IsSameColor(_currentBrush, r, g, b)) return;
 
-        // Only update if color changed
-        if (newColor == _lastColor) return;
-        _lastColor = newColor;
+        _currentBrush.Color = Color.FromRgb(r, g, b);
+        _invertedBrush.Color = GetInvertedColor(r, g, b);
 
-        // Update brush + text
-        _brush.Color = newColor;
-        ColorText.Text = $"R: {r}, G: {g}, B: {b}";
+        // Update UI
+        UpdatePreviewColor(_currentBrush);
+        UpdateTextContent(r, g, b);
+        UpdateTextColor(_invertedBrush);
+        UpdateIconColor(_invertedBrush);
+        UpdateMessageColor(_invertedBrush);
+    }
+
+    private void UpdateColorsStatic()
+    {
+        byte r = _currentBrush.Color.R;
+        byte g = _currentBrush.Color.G;
+        byte b = _currentBrush.Color.B;
+
+        UpdatePreviewColor(_currentBrush);
+        UpdateTextContent(r, g, b);
+        UpdateTextColor(_invertedBrush);
+        UpdateIconColor(_invertedBrush);
+        UpdateMessageColor(_invertedBrush);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static uint GetColorAtPos(POINT p)
+    {
+        IntPtr hdc = GetDC(IntPtr.Zero);
+        uint colorRef = GetPixel(hdc, p.X, p.Y);
+        _ = ReleaseDC(IntPtr.Zero, hdc);
+
+        return colorRef;
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static bool IsSameColor(SolidColorBrush brush, byte r, byte g, byte b)
+    {
+        return brush.Color.R == r &&
+                brush.Color.G == g &&
+                brush.Color.B == b;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static Color GetInvertedColor(byte r, byte g, byte b)
+    {
+        byte invR = (byte)(255 - r);
+        byte invG = (byte)(255 - g);
+        byte invB = (byte)(255 - b);
+
+        return Color.FromRgb(invR, invG, invB);
+    }
+
+    private void UpdatePreviewColor(SolidColorBrush brush)
+    {
+        ColorPreview.Fill = brush;
+    }
+
+    private void UpdateTextContent(byte r, byte g, byte b)
+    {
+        string content, type;
+        
+        switch (CurrentColorType)
+        {
+            case ColorTypes.RGB:
+                content = RGB(r, g, b); type = "RGB"; break;
+            case ColorTypes.HEX:
+                content = HEX(r, g, b); type = "HEX"; break;
+            case ColorTypes.HSL:
+                content = HSL(r, g, b); type = "HSL"; break;
+            case ColorTypes.HSV:
+                content = HSV(r, g, b); type = "HSV"; break;
+            case ColorTypes.CMYK:
+                content = CMYK(r, g, b); type = "CMYK"; break;
+            default:
+                DB.Print("Unknown color type");
+                content = "";
+                type = "";
+                break;
+        }
+
+        ColorTextType.Text = type;
+        ColorText.Text = content;
+        CurrentTextContent = content;
+    }
+
+    private void UpdateTextColor(SolidColorBrush brush)
+    {
+        ColorTextType.Foreground = brush;
+        ColorText.Foreground = brush;
+    }
+
+    private void UpdateIconColor(SolidColorBrush brush)
+    {
+        DropdownButtonIcon.Foreground = brush;
+        CopyButtonIcon.Foreground = brush;
+        IsRunningIcon.Foreground = brush;
+    }
+
+    private void UpdateMessageColor(SolidColorBrush brush)
+    {   
+        if (_isMessageOpen)
+            Message.Foreground = brush;
+    }
+
+    private string HEX(byte r, byte g, byte b)
+    {
+        return $"#{r:X2}{g:X2}{b:X2}";
+    }
+
+    private string RGB(byte r, byte g, byte b)
+    {
+        return $"{r},{g},{b}";
+    }
+
+    private string HSV(byte r, byte g, byte b)
+    {
+        var (h, s, v) = ConvertToHSV(r, g, b);
+        return $"{h:F0}°,{s * 100:F0}%,{v * 100:F0}%";
+    }
+
+    private string HSL(byte r, byte g, byte b)
+    {
+        var (h, s, l) = ConvertToHSL(r, g, b);
+        return $"{h:F0}°,{s * 100:F0}%,{l * 100:F0}%";
+    }
+
+    private string CMYK(byte r, byte g, byte b)
+    {
+        var (c, m, y, k) = ConvertToCMYK(r, g, b);
+        return $"{c * 100:F0}%,{m * 100:F0}%,{y * 100:F0}%,{k * 100:F0}%";
+    }
+
+    public async void CopyColorToClipboard()
+    {
+        if (string.IsNullOrEmpty(CurrentTextContent)) return;
+
+        DB.Print($"Copy: {CurrentTextContent}");
+        Clipboard.SetText(CurrentTextContent);
+        await ShowMessageAsync("Copied!", 3000);
+    }
+
+    private static (double H, double S, double L) ConvertToHSL(byte r, byte g, byte b)
+    {
+        double rNorm = r / 255.0;
+        double gNorm = g / 255.0;
+        double bNorm = b / 255.0;
+
+        double max = Math.Max(rNorm, Math.Max(gNorm, bNorm));
+        double min = Math.Min(rNorm, Math.Min(gNorm, bNorm));
+        double delta = max - min;
+
+        double h = 0;
+        double s = 0;
+        double l = (max + min) / 2.0;
+
+        if (delta != 0)
+        {
+            s = delta / (1 - Math.Abs(2 * l - 1));
+
+            if (max == rNorm)
+                h = 60 * (((gNorm - bNorm) / delta) % 6);
+            else if (max == gNorm)
+                h = 60 * (((bNorm - rNorm) / delta) + 2);
+            else // max == bNorm
+                h = 60 * (((rNorm - gNorm) / delta) + 4);
+        }
+
+        if (h < 0) h += 360;
+
+        return (h, s, l);
+    }
+
+    private static (double H, double S, double V) ConvertToHSV(byte r, byte g, byte b)
+    {
+        double rNorm = r / 255.0;
+        double gNorm = g / 255.0;
+        double bNorm = b / 255.0;
+
+        double max = Math.Max(rNorm, Math.Max(gNorm, bNorm));
+        double min = Math.Min(rNorm, Math.Min(gNorm, bNorm));
+        double delta = max - min;
+
+        double h = 0;
+        if (delta != 0)
+        {
+            if (max == rNorm)
+                h = 60 * (((gNorm - bNorm) / delta) % 6);
+            else if (max == gNorm)
+                h = 60 * (((bNorm - rNorm) / delta) + 2);
+            else // max == bNorm
+                h = 60 * (((rNorm - gNorm) / delta) + 4);
+        }
+
+        if (h < 0) h += 360;
+
+        double s = (max == 0) ? 0 : delta / max;
+        double v = max;
+
+        return (h, s, v);
+    }
+
+    private static (double C, double M, double Y, double K) ConvertToCMYK(byte r, byte g, byte b)
+    {
+        double rNorm = r / 255.0;
+        double gNorm = g / 255.0;
+        double bNorm = b / 255.0;
+
+        double k = 1 - Math.Max(rNorm, Math.Max(gNorm, bNorm));
+        if (k >= 1.0 - 1e-6) // Black
+            return (0, 0, 0, 1);
+
+        double c = (1 - rNorm - k) / (1 - k);
+        double m = (1 - gNorm - k) / (1 - k);
+        double y = (1 - bNorm - k) / (1 - k);
+
+        return (c, m, y, k);
+    }
+
+    public string GetColorType()
+    { 
+        return CurrentColorType.ToString();
     }
 }

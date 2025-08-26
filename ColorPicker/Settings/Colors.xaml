@@ -5,7 +5,7 @@
 
 
     <SolidColorBrush x:Key="WindowBackground" Color="#272727" />
-    <SolidColorBrush x:Key="WindowBorder" Color="Transparent" />
+    <SolidColorBrush x:Key="WindowBorder" Color="#272727" />
 
 
 

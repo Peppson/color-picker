@@ -6,6 +6,7 @@
     xmlns:fa="http://schemas.fontawesome.io/icons/"
     xmlns:local="clr-namespace:ColorPicker.Components"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="clr-namespace:ColorPicker.Models"
     mc:Ignorable="d">
 
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
@@ -16,30 +17,196 @@
             </Grid.ColumnDefinitions>
 
 
-
             <!--  Zoom View  -->
             <Grid
                 Grid.Column="0"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
                 Background="Aqua">
-                <Rectangle x:Name="ColorPreview" />
-            </Grid>
-
-
-
-            <!--  Color View  -->
-            <Grid Grid.Column="1" Background="Green">
                 <TextBlock
-                    x:Name="ColorText"
                     FontSize="16"
-                    Text="fdsfsdfds"
+                    Text=":kalv:"
                     TextAlignment="Center" />
             </Grid>
 
 
+            <!--  Color View  -->
+            <Grid
+                x:Name="ColorView"
+                Grid.Column="1"
+                VerticalAlignment="Stretch"
+                MouseLeftButtonUp="ColorView_MouseLeftButtonUp"
+                MouseRightButtonUp="DropdownMouse_Click">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
 
+                <Rectangle
+                    x:Name="ColorPreview"
+                    Grid.Row="0"
+                    Grid.RowSpan="4"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch" />
 
+                <!--  Top Panel  -->
+                <Grid
+                    Grid.Row="1"
+                    Height="32"
+                    Panel.ZIndex="1">
+
+                    <!--  Dropdown Button  -->
+                    <Border
+                        x:Name="DropdownButton"
+                        Width="20"
+                        Height="20"
+                        Margin="6"
+                        HorizontalAlignment="Left"
+                        Cursor="Hand"
+                        MouseLeftButtonUp="DropdownButton_Click">
+                        <Border.ToolTip>
+                            <TextBlock>
+                                Color menu<LineBreak />
+                                ● Right-click to open at mouse</TextBlock>
+                        </Border.ToolTip>
+                        <fa:ImageAwesome
+                            x:Name="DropdownButtonIcon"
+                            Width="16"
+                            Height="16"
+                            Foreground="Black"
+                            Icon="Sliders" />
+
+                        <Border.ContextMenu>
+                            <ContextMenu x:Name="ColorTypeMenu">
+                                <MenuItem
+                                    Click="DropdownMenuItem_Click"
+                                    Cursor="Hand"
+                                    Header="HEX"
+                                    Tag="{x:Static models:ColorTypes.HEX}" />
+                                <MenuItem
+                                    Click="DropdownMenuItem_Click"
+                                    Cursor="Hand"
+                                    Header="RGB"
+                                    Tag="{x:Static models:ColorTypes.RGB}" />
+                                <MenuItem
+                                    Click="DropdownMenuItem_Click"
+                                    Cursor="Hand"
+                                    Header="HSV"
+                                    Tag="{x:Static models:ColorTypes.HSV}" />
+                                <MenuItem
+                                    Click="DropdownMenuItem_Click"
+                                    Cursor="Hand"
+                                    Header="HSL"
+                                    Tag="{x:Static models:ColorTypes.HSL}" />
+                                <MenuItem
+                                    Click="DropdownMenuItem_Click"
+                                    Cursor="Hand"
+                                    Header="CMYK"
+                                    Tag="{x:Static models:ColorTypes.CMYK}" />
+                            </ContextMenu>
+                        </Border.ContextMenu>
+                    </Border>
+
+                    <!--  Top Message  -->
+                    <TextBlock
+                        x:Name="Message"
+                        Margin="0,7,0,0"
+                        HorizontalAlignment="Center"
+                        FontSize="15"
+                        FontWeight="Bold"
+                        Foreground="Black" />
+
+                    <!--  Copy Button  -->
+                    <Border
+                        x:Name="CopyButton"
+                        Width="20"
+                        Height="20"
+                        Margin="6"
+                        HorizontalAlignment="Right"
+                        Cursor="Hand"
+                        MouseLeftButtonUp="CopyButton_Click">
+                        <Border.ToolTip>
+                            <TextBlock>
+                                Copy color to clipboard<LineBreak />
+                                ● Ctrl+C to copy</TextBlock>
+                        </Border.ToolTip>
+                        <fa:ImageAwesome
+                            x:Name="CopyButtonIcon"
+                            Width="16"
+                            Height="16"
+                            Foreground="Black"
+                            Icon="Clone" />
+                    </Border>
+                </Grid>
+
+                <!--  Color Display  -->
+                <Grid
+                    Grid.Row="2"
+                    MaxWidth="400"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Panel.ZIndex="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <!--  HEX  -->
+                    <TextBlock
+                        x:Name="ColorTextType"
+                        Grid.Row="0"
+                        Margin="20,0,20,-20"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontSize="40"
+                        Text="HEX"
+                        TextAlignment="Center" />
+
+                    <!--  #FFFFFF  -->
+                    <Viewbox
+                        Grid.Row="1"
+                        MinHeight="70"
+                        Margin="20,0,20,0"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        StretchDirection="DownOnly">
+                        <TextBlock
+                            x:Name="ColorText"
+                            FontSize="74"
+                            Text="#FFFFFF"
+                            TextAlignment="Center" />
+                    </Viewbox>
+                </Grid>
+
+                <!--  Bottom Info  -->
+                <Grid
+                    Grid.Row="3"
+                    Height="32"
+                    Margin="7,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Cursor="Hand"
+                    MouseLeftButtonUp="ToggleRunning_Click">
+                    <Grid.ToolTip>
+                        <TextBlock>
+                            Pause/resume<LineBreak />
+                            ● Left-click anywhere<LineBreak />
+                            ● Ctrl+Spacebar</TextBlock>
+                    </Grid.ToolTip>
+
+                    <Border Width="18" Height="18">
+                        <fa:ImageAwesome
+                            x:Name="IsRunningIcon"
+                            Width="18"
+                            Height="18"
+                            VerticalAlignment="Center"
+                            Foreground="Black"
+                            Icon="Pause" />
+                    </Border>
+                </Grid>
+            </Grid>
         </Grid>
     </Grid>
 </UserControl>

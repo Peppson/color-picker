@@ -9,9 +9,13 @@
     Title="ColorPicker"
     Width="450"
     Height="250"
+    MinWidth="340"
+    MinHeight="176"
     AllowsTransparency="True"
     FontFamily="Consolas"
     Icon="pack://application:,,,/Assets/AppIcon_32.ico"
+    ResizeMode="CanResizeWithGrip"
+    WindowState="Normal"
     WindowStyle="None"
     mc:Ignorable="d">
 
@@ -30,20 +34,7 @@
             <components:WindowTitleBar x:Name="TopTitleBar" Grid.Row="0" />
 
             <!--  App  -->
-            <Grid Grid.Row="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-
-                <components:ColorPicker Grid.Row="0" />
-
-                <components:ResizeHandle
-                    Margin="0,0,-4,-5"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Bottom"
-                    Panel.ZIndex="10" />
-            </Grid>
+            <components:ColorPicker x:Name="ColorPicker" Grid.Row="1" />
         </Grid>
     </Border>
 </Window>

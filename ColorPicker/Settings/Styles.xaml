@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
-    <!--  Titlebar Buttons  -->
+    <!--  Window Titlebar Buttons  -->
     <Style x:Key="TitleBarButtonStyle" TargetType="Button">
         <Setter Property="Foreground" Value="{DynamicResource PrimaryText}" />
         <Setter Property="Padding" Value="0" />
@@ -40,7 +40,7 @@
         </Setter>
     </Style>
 
-    <!--  Titlebar Button Close  -->
+    <!--  Window Titlebar Button Close  -->
     <Style x:Key="TitleBarCloseButtonStyle" TargetType="Button">
         <Setter Property="Foreground" Value="{DynamicResource PrimaryText}" />
         <Setter Property="Padding" Value="0" />
@@ -87,6 +87,11 @@
             </DataTrigger>
         </Style.Triggers>
     </Style>
+
+
+
+
+
 
 
 
