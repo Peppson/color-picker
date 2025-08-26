@@ -1,0 +1,45 @@
+﻿<UserControl
+    x:Class="ColorPicker.Components.ColorPicker"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:fa="http://schemas.fontawesome.io/icons/"
+    xmlns:local="clr-namespace:ColorPicker.Components"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="4*" />
+            </Grid.ColumnDefinitions>
+
+
+
+            <!--  Zoom View  -->
+            <Grid
+                Grid.Column="0"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Background="Aqua">
+                <Rectangle x:Name="ColorPreview" />
+            </Grid>
+
+
+
+            <!--  Color View  -->
+            <Grid Grid.Column="1" Background="Green">
+                <TextBlock
+                    x:Name="ColorText"
+                    FontSize="16"
+                    Text="fdsfsdfds"
+                    TextAlignment="Center" />
+            </Grid>
+
+
+
+
+        </Grid>
+    </Grid>
+</UserControl>
