@@ -9,34 +9,88 @@
     xmlns:models="clr-namespace:ColorPicker.Models"
     mc:Ignorable="d">
 
-    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    <Grid
+        x:Name="AppGrid"
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch"
+        MouseLeftButtonUp="ColorView_MouseLeftButtonUp"
+        MouseRightButtonUp="DropdownMouse_Click"
+        SnapsToDevicePixels="True"
+        UseLayoutRounding="True">
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="3*" />
                 <ColumnDefinition Width="4*" />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="5*" />
             </Grid.ColumnDefinitions>
-
 
             <!--  Zoom View  -->
             <Grid
                 Grid.Column="0"
                 HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Background="Aqua">
+                VerticalAlignment="Stretch">
+                <Image
+                    x:Name="ZoomImage"
+                    Margin="0,0,0,0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    RenderOptions.BitmapScalingMode="NearestNeighbor"
+                    SnapsToDevicePixels="True"
+                    Stretch="Fill" />
+
+                <!--  %  -->
                 <TextBlock
-                    FontSize="16"
-                    Text=":kalv:"
-                    TextAlignment="Center" />
+                    x:Name="ZoomLevelText"
+                    Margin="6,7,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    FontSize="15"
+                    Foreground="Red"
+                    Text="{Binding ZoomPercent, StringFormat={}{0}%}" />
+
+                <!--  Zoom level  -->
+                <Slider
+                    x:Name="ZoomSlider"
+                    Margin="20,0,20,10"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Bottom"
+                    Cursor="Hand"
+                    IsSnapToTickEnabled="True"
+                    IsTabStop="False"
+                    Maximum="91"
+                    Minimum="11"
+                    Style="{StaticResource ZoomSliderStyle}"
+                    TickFrequency="2"
+                    Value="{Binding ZoomLevel, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+
+                <!--  Crosshair  -->
+                <Grid IsHitTestVisible="False">
+                    <Rectangle
+                        x:Name="CrosshairVertical"
+                        Width="2"
+                        Height="90"
+                        HorizontalAlignment="Center"
+                        Fill="{DynamicResource WindowBorder}" />
+                    <Rectangle
+                        x:Name="CrosshairHorizontal"
+                        Width="90"
+                        Height="2"
+                        VerticalAlignment="Center"
+                        Fill="{DynamicResource WindowBorder}" />
+                </Grid>
             </Grid>
 
+            <!--  Divider  -->
+            <Rectangle
+                Grid.Column="1"
+                Width="2"
+                Fill="{DynamicResource WindowBorder}" />
 
             <!--  Color View  -->
             <Grid
                 x:Name="ColorView"
-                Grid.Column="1"
-                VerticalAlignment="Stretch"
-                MouseLeftButtonUp="ColorView_MouseLeftButtonUp"
-                MouseRightButtonUp="DropdownMouse_Click">
+                Grid.Column="2"
+                VerticalAlignment="Stretch">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="auto" />

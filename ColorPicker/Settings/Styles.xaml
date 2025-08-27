@@ -3,6 +3,17 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
+    <!--  Window border  -->
+    <Style x:Key="WindowMainPanelStyle" TargetType="{x:Type Border}">
+        <Setter Property="BorderBrush" Value="{DynamicResource WindowBorder}" />
+        <Setter Property="BorderThickness" Value="2,1,2,2" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=WindowState}" Value="Maximized">
+                <Setter Property="BorderThickness" Value="0" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
     <!--  Window Titlebar Buttons  -->
     <Style x:Key="TitleBarButtonStyle" TargetType="Button">
         <Setter Property="Foreground" Value="{DynamicResource PrimaryText}" />
@@ -77,80 +88,43 @@
         </Setter>
     </Style>
 
-    <!--  Window border  -->
-    <Style x:Key="WindowMainPanelStyle" TargetType="{x:Type Border}">
-        <Setter Property="BorderBrush" Value="{DynamicResource WindowBorder}" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=WindowState}" Value="Maximized">
-                <Setter Property="BorderThickness" Value="0" />
-            </DataTrigger>
-        </Style.Triggers>
-    </Style>
-
-
-
-
-
-
-
-
-    <!--  Scroll Bar  -->
-    <Style TargetType="{x:Type ScrollBar}">
-        <Style.Triggers>
-            <Trigger Property="Orientation" Value="Vertical">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type ScrollBar}">
-                            <Track
-                                Name="PART_Track"
-                                Grid.Row="0"
-                                Width="5"
-                                Margin="12,0,0,0"
-                                VerticalAlignment="Stretch"
-                                IsDirectionReversed="True">
-                                <Track.DecreaseRepeatButton>
-                                    <RepeatButton Background="{DynamicResource ScrollbarBackground}">
-                                        <RepeatButton.Template>
-                                            <ControlTemplate TargetType="RepeatButton">
-                                                <Rectangle Width="{TemplateBinding ActualWidth}" Fill="{DynamicResource ScrollbarBackground}" />
-                                            </ControlTemplate>
-                                        </RepeatButton.Template>
-                                    </RepeatButton>
-                                </Track.DecreaseRepeatButton>
-
-                                <Track.Thumb>
-                                    <Thumb>
-                                        <Thumb.Template>
-                                            <ControlTemplate TargetType="Thumb">
-                                                <Border
-                                                    x:Name="ThumbRectangle"
-                                                    Background="{DynamicResource ScrollbarForeground}"
-                                                    CornerRadius="2" />
-                                                <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter TargetName="ThumbRectangle" Property="Background" Value="{DynamicResource ScrollbarHover}" />
-                                                    </Trigger>
-                                                </ControlTemplate.Triggers>
-                                            </ControlTemplate>
-                                        </Thumb.Template>
-                                    </Thumb>
-                                </Track.Thumb>
-
-                                <Track.IncreaseRepeatButton>
-                                    <RepeatButton Background="{DynamicResource ScrollbarBackground}">
-                                        <RepeatButton.Template>
-                                            <ControlTemplate TargetType="RepeatButton">
-                                                <Rectangle Height="{TemplateBinding ActualHeight}" Fill="{DynamicResource ScrollbarBackground}" />
-                                            </ControlTemplate>
-                                        </RepeatButton.Template>
-                                    </RepeatButton>
-                                </Track.IncreaseRepeatButton>
-                            </Track>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Trigger>
-        </Style.Triggers>
+    <!--  Zoom Slider  -->
+    <Style x:Key="ZoomSliderStyle" TargetType="Slider">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Slider">
+                    <Grid>
+                        <Track x:Name="PART_Track" VerticalAlignment="Center">
+                            <Track.DecreaseRepeatButton>
+                                <RepeatButton
+                                    Height="3"
+                                    Background="Black"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False" />
+                            </Track.DecreaseRepeatButton>
+                            <Track.IncreaseRepeatButton>
+                                <RepeatButton
+                                    Height="3"
+                                    Background="Black"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False" />
+                            </Track.IncreaseRepeatButton>
+                            <Track.Thumb>
+                                <Thumb Width="22" Height="11">
+                                    <Thumb.Template>
+                                        <ControlTemplate TargetType="Thumb">
+                                            <Border
+                                                x:Name="PART_ThumbBorder"
+                                                BorderBrush="Transparent"
+                                                BorderThickness="1" />
+                                        </ControlTemplate>
+                                    </Thumb.Template>
+                                </Thumb>
+                            </Track.Thumb>
+                        </Track>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 </ResourceDictionary>
