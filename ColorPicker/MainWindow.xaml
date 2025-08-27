@@ -13,7 +13,7 @@
     MinHeight="176"
     AllowsTransparency="True"
     FontFamily="Consolas"
-    Icon="pack://application:,,,/Assets/AppIcon_32.ico"
+    Icon="pack://application:,,,/Assets/Icon_32.ico"
     ResizeMode="CanResizeWithGrip"
     WindowState="Normal"
     WindowStyle="None"

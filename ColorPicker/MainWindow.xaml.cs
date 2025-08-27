@@ -45,8 +45,7 @@ public partial class MainWindow : Window
         var hwndSource = (HwndSource)PresentationSource.FromVisual(this);
         hwndSource.AddHook(PreventMaximize);
 
-        // Setup Ctrl+Spacebar as global hotkey for pause/resume
-        SetupGlobalHotkey();
+        SetupGlobalHotkey(); // Setup Ctrl+Spacebar as global hotkey for pause/resume
     }
 
     private void OnWindowClose(object? sender, System.ComponentModel.CancelEventArgs e)

@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:ColorPicker"
+    xmlns:svc="clr-namespace:ColorPicker.Services"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     StartupUri="MainWindow.xaml">
 
@@ -13,9 +14,11 @@
                 <ResourceDictionary Source="Settings/Sizes.xaml" />
                 <ResourceDictionary Source="Settings/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <svc:EnumToBoolConverter x:Key="EnumToBoolConverter" />
+            <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         </ResourceDictionary>
     </Application.Resources>
-
 </Application>
 
 

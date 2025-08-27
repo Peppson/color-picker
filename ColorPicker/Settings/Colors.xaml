@@ -7,7 +7,7 @@
     <SolidColorBrush x:Key="WindowBackground" Color="#272727" />
     <SolidColorBrush x:Key="WindowBorder" Color="#272727" />
 
-
+    <SolidColorBrush x:Key="OnTopDisabled" Color="#787878" />
 
     <SolidColorBrush x:Key="TitleBarBackground" Color="#272727" />
     <SolidColorBrush x:Key="TitleBarButtonHover" Color="#434343" />
@@ -43,6 +43,7 @@
     <SolidColorBrush x:Key="ScrollbarBackground" Color="Transparent" />
     <SolidColorBrush x:Key="ScrollbarForeground" Color="#767676" />
     <SolidColorBrush x:Key="ScrollbarHover" Color="#9F9F9F" />
+
 
     <!--  Buttons  -->
     <SolidColorBrush x:Key="GetButton" Color="#60affe" />

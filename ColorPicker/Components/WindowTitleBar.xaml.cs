@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using ColorPicker.Services;
 
@@ -33,6 +32,10 @@ public partial class WindowTitleBar : UserControl
     {
         _mainWindow.Topmost = !_mainWindow.Topmost;
         DB.Print($"Window OnTop: {_mainWindow.Topmost}");
+
+        this.OnTopButtonIcon.Foreground = _mainWindow.Topmost ? 
+            (System.Windows.Media.Brush)Application.Current.Resources["PrimaryText"] : 
+            (System.Windows.Media.Brush)Application.Current.Resources["OnTopDisabled"];
     }
    
     private void OnMinimizeButton_Click(object sender, RoutedEventArgs e) =>

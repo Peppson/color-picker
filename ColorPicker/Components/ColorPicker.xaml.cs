@@ -76,7 +76,7 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
     }
 
     
-    private int _zoomLevel = 21; 
+    private int _zoomLevel = 27; 
     public int ZoomLevel
     {
         get => _zoomLevel;
@@ -120,9 +120,6 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
     private Border _slider1;
     private RepeatButton _slider2;
     private RepeatButton _slider3;
-
-
-
     private void RegisterSliderParts()
     {
         ZoomSlider.ApplyTemplate();
@@ -175,14 +172,8 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         {
             int dx = currentMouse.X - _dragStartMouse.X;
             int dy = currentMouse.Y - _dragStartMouse.Y;
-
-            // Normal
             _lastMousePos.X = _dragStartPos.X + dx;
             _lastMousePos.Y = _dragStartPos.Y + dy;
-
-            // Inverted
-            /* _lastMousePos.X = _dragStartPos.X - dx;
-            _lastMousePos.Y = _dragStartPos.Y - dy; */
 
             UpdateZoomView(_lastMousePos, ZoomLevel);
             UpdateColors(_lastMousePos);

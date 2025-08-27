@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <AssemblyName>ColorPicker</AssemblyName>
-    <ApplicationIcon>Assets\AppIcon_64.ico</ApplicationIcon>
+    <ApplicationIcon>Assets\Icon_32.ico</ApplicationIcon>
     <TargetFramework>net9.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -33,28 +33,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Assets\AppIcon_32.ico" />
-    <None Remove="Assets\AppIcon_64.ico" />
-    <None Remove="Assets\AppIcon_128.ico" />
+    <None Remove="Assets\Icon_32.ico" />
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Assets\AppIcon_32.ico">
+    <Resource Include="Assets\Icon_32.ico">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
-
-    <ItemGroup>
-	    <Resource Include="Assets\AppIcon_64.ico">
-		    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-	    </Resource>
-    </ItemGroup>
-
-	<ItemGroup>
-		<Resource Include="Assets\AppIcon_128.ico">
-			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
-		</Resource>
-	</ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
