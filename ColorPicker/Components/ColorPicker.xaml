@@ -13,7 +13,6 @@
         x:Name="AppGrid"
         HorizontalAlignment="Stretch"
         VerticalAlignment="Stretch"
-        MouseLeftButtonUp="ColorView_MouseLeftButtonUp"
         MouseRightButtonUp="DropdownMouse_Click"
         SnapsToDevicePixels="True"
         UseLayoutRounding="True">
@@ -34,6 +33,7 @@
                     Margin="0,0,0,0"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
+                    Cursor="SizeAll"
                     RenderOptions.BitmapScalingMode="NearestNeighbor"
                     SnapsToDevicePixels="True"
                     Stretch="Fill" />
@@ -45,7 +45,7 @@
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
                     FontSize="15"
-                    Foreground="Red"
+                    Foreground="Black"
                     Text="{Binding ZoomPercent, StringFormat={}{0}%}" />
 
                 <!--  Zoom level  -->
@@ -55,6 +55,7 @@
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Bottom"
                     Cursor="Hand"
+                    Focusable="False"
                     IsSnapToTickEnabled="True"
                     IsTabStop="False"
                     Maximum="91"
@@ -90,7 +91,8 @@
             <Grid
                 x:Name="ColorView"
                 Grid.Column="2"
-                VerticalAlignment="Stretch">
+                VerticalAlignment="Stretch"
+                MouseLeftButtonUp="ColorView_MouseLeftButtonUp">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="auto" />

@@ -22,7 +22,7 @@
             Grid.Column="0"
             Width="{StaticResource IconSizeTitleBar}"
             Height="{StaticResource IconSizeTitleBar}"
-            Margin="8,0,3,0"
+            Margin="5,0,2,0"
             Source="/Assets/AppIcon_32.ico" />
 
         <TextBlock

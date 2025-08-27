@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using ColorPicker.Services;
 
 namespace ColorPicker.Components;
@@ -15,18 +14,14 @@ public partial class WindowTitleBar : UserControl
     {
         InitializeComponent();
         Loaded += OnLoaded;
-
+        
         #if !RELEASE
-            this.DebugButton.Visibility = Visibility.Visible;
+            //this.DebugButton.Visibility = Visibility.Visible;
         #endif
     }
 
     private void OnLoaded(object? sender, RoutedEventArgs e)
     {   
-        #if !RELEASE
-            if (DesignerProperties.GetIsInDesignMode(this)) return; // Xaml designer in vstudio
-        #endif
-        
         _mainWindow = Window.GetWindow(this)!;
         _mainWindow.Topmost = true;
 

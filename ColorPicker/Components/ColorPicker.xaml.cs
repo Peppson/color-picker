@@ -148,6 +148,65 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
 
 
 
+    [LibraryImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool SetCursorPos(int X, int Y);
+    private bool _isDragging = false;
+    private POINT _dragStartMouse;
+    private POINT _dragStartPos;
+
+    private void ZoomImage_MouseDown(object sender, MouseButtonEventArgs e)
+    {
+        if (e.LeftButton == MouseButtonState.Pressed)
+        {
+            _isDragging = true;
+            Mouse.OverrideCursor = Cursors.None;
+
+            if (GetCursorPos(out _dragStartMouse))
+                _dragStartPos = _lastMousePos;
+
+            ZoomImage.CaptureMouse();
+        }
+    }
+
+    private void ZoomImage_MouseMove(object sender, MouseEventArgs e)
+    {
+        if (_isDragging && GetCursorPos(out POINT currentMouse))
+        {
+            int dx = currentMouse.X - _dragStartMouse.X;
+            int dy = currentMouse.Y - _dragStartMouse.Y;
+
+            // Normal
+            _lastMousePos.X = _dragStartPos.X + dx;
+            _lastMousePos.Y = _dragStartPos.Y + dy;
+
+            // Inverted
+            /* _lastMousePos.X = _dragStartPos.X - dx;
+            _lastMousePos.Y = _dragStartPos.Y - dy; */
+
+            UpdateZoomView(_lastMousePos, ZoomLevel);
+            UpdateColors(_lastMousePos);
+        }
+    }
+
+    private void ZoomImage_MouseUp(object sender, MouseButtonEventArgs e)
+    {
+        if (_isDragging)
+        {
+            _isDragging = false;
+            ZoomImage.ReleaseMouseCapture();
+
+            // Set mouse pos back where we started
+            SetCursorPos(_dragStartMouse.X, _dragStartMouse.Y);
+            Mouse.OverrideCursor = null;
+        }
+    }
+
+
+
+
+
+
 
     
 
@@ -159,7 +218,11 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         Loaded += OnLoaded;
         Unloaded += OnUnloaded;
         CompositionTarget.Rendering += OnNewFrame!;
+
         ZoomImage.MouseWheel += ZoomImage_MouseWheel;
+        ZoomImage.MouseDown += ZoomImage_MouseDown;
+        ZoomImage.MouseMove += ZoomImage_MouseMove;
+        ZoomImage.MouseUp += ZoomImage_MouseUp;
 
         DropdownButton.ContextMenu.Closed += (s, e) =>
         {
@@ -282,27 +345,35 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
     }
 
     private void Keyboard_Click(object sender, KeyEventArgs e)
-    {   
-        // Only trigger if mouse is over app window
-        if (!this.IsMouseOver)
+    {
+        // CTRL + C
+        if (e.Key == Key.C && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
         {
+            CopyColorToClipboard();
+            UpdateMessageColor(_invertedBrush);
             e.Handled = true;
             return;
         }
 
-        // CTRL + C
-        if (e.Key == Key.C && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
-        {   
-            CopyColorToClipboard();
-            UpdateMessageColor(_invertedBrush);
-        } 
-
         // Spacebar 
-        if (e.Key == Key.Space )
+        else if (e.Key == Key.Space)
         {
             ToggleSampling();
+            e.Handled = true;
+            return;
         }
 
+        // Arrow keys
+        else if (e.Key == Key.Left)
+            _lastMousePos.X--;
+        else if (e.Key == Key.Right)
+            _lastMousePos.X++;
+        else if (e.Key == Key.Up)
+            _lastMousePos.Y--;
+        else if (e.Key == Key.Down)
+            _lastMousePos.Y++;
+           
+        UpdateColors(_lastMousePos);
         e.Handled = true;
     }
 
