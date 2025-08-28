@@ -142,41 +142,41 @@
                             Icon="Sliders" />
 
                         <Border.ContextMenu>
-                            <ContextMenu x:Name="ColorTypeMenu" Style="{StaticResource ModernContextMenuStyle}">
+                            <ContextMenu x:Name="ColorTypeMenu" Style="{StaticResource ContextMenuStyle}">
                                 <MenuItem
                                     Click="DropdownMenuItem_Click"
                                     Cursor="Hand"
                                     Header="HEX"
                                     IsChecked="{Binding CurrentColorType, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=HEX}"
-                                    Style="{StaticResource ModernMenuItemStyle}"
+                                    Style="{StaticResource MenuItemStyle}"
                                     Tag="{x:Static models:ColorTypes.HEX}" />
                                 <MenuItem
                                     Click="DropdownMenuItem_Click"
                                     Cursor="Hand"
                                     Header="RGB"
                                     IsChecked="{Binding CurrentColorType, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=RGB}"
-                                    Style="{StaticResource ModernMenuItemStyle}"
+                                    Style="{StaticResource MenuItemStyle}"
                                     Tag="{x:Static models:ColorTypes.RGB}" />
                                 <MenuItem
                                     Click="DropdownMenuItem_Click"
                                     Cursor="Hand"
                                     Header="HSV"
                                     IsChecked="{Binding CurrentColorType, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=HSV}"
-                                    Style="{StaticResource ModernMenuItemStyle}"
+                                    Style="{StaticResource MenuItemStyle}"
                                     Tag="{x:Static models:ColorTypes.HSV}" />
                                 <MenuItem
                                     Click="DropdownMenuItem_Click"
                                     Cursor="Hand"
                                     Header="HSL"
                                     IsChecked="{Binding CurrentColorType, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=HSL}"
-                                    Style="{StaticResource ModernMenuItemStyle}"
+                                    Style="{StaticResource MenuItemStyle}"
                                     Tag="{x:Static models:ColorTypes.HSL}" />
                                 <MenuItem
                                     Click="DropdownMenuItem_Click"
                                     Cursor="Hand"
                                     Header="CMYK"
                                     IsChecked="{Binding CurrentColorType, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=CMYK}"
-                                    Style="{StaticResource ModernMenuItemStyle}"
+                                    Style="{StaticResource MenuItemStyle}"
                                     Tag="{x:Static models:ColorTypes.CMYK}" />
                             </ContextMenu>
                         </Border.ContextMenu>

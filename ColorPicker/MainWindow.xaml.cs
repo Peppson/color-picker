@@ -6,8 +6,6 @@ namespace ColorPicker;
 
 public partial class MainWindow : Window
 {
-    private const int HOTKEY_ID = 9000;    
-
     [LibraryImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static partial bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
@@ -15,6 +13,8 @@ public partial class MainWindow : Window
     [LibraryImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static partial bool UnregisterHotKey(IntPtr hWnd, int id);
+
+    private const int HOTKEY_ID = 9000;   
 
     public MainWindow()
     {

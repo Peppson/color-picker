@@ -1,6 +1,6 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿ <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <AssemblyName>ColorPicker</AssemblyName>
+    <AssemblyName>ColorGrab</AssemblyName>
     <ApplicationIcon>Assets\Icon_32.ico</ApplicationIcon>
     <TargetFramework>net9.0-windows</TargetFramework>
     <Nullable>enable</Nullable>

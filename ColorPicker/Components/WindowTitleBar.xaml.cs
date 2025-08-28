@@ -13,10 +13,6 @@ public partial class WindowTitleBar : UserControl
     {
         InitializeComponent();
         Loaded += OnLoaded;
-        
-        #if !RELEASE
-            //this.DebugButton.Visibility = Visibility.Visible;
-        #endif
     }
 
     private void OnLoaded(object? sender, RoutedEventArgs e)
@@ -33,7 +29,7 @@ public partial class WindowTitleBar : UserControl
         _mainWindow.Topmost = !_mainWindow.Topmost;
         DB.Print($"Window OnTop: {_mainWindow.Topmost}");
 
-        this.OnTopButtonIcon.Foreground = _mainWindow.Topmost ? 
+        this.OnTopButtonIcon.Foreground = _mainWindow.Topmost ? // todo color?
             (System.Windows.Media.Brush)Application.Current.Resources["PrimaryText"] : 
             (System.Windows.Media.Brush)Application.Current.Resources["OnTopDisabled"];
     }

@@ -6,7 +6,7 @@
     <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
 
     <!--  Window border  -->
-    <Style x:Key="WindowMainPanelStyle" TargetType="{x:Type Border}">
+    <Style x:Key="WindowBorderStyle" TargetType="{x:Type Border}">
         <Setter Property="BorderBrush" Value="{DynamicResource WindowBorder}" />
         <Setter Property="BorderThickness" Value="2,1,2,2" />
         <Style.Triggers>
@@ -131,7 +131,7 @@
     </Style>
 
     <!--  ContextMenu Style  -->
-    <Style x:Key="ModernContextMenuStyle" TargetType="ContextMenu">
+    <Style x:Key="ContextMenuStyle" TargetType="ContextMenu">
         <Setter Property="Background" Value="{DynamicResource WindowBackground}" />
         <Setter Property="BorderBrush" Value="{DynamicResource Border}" />
         <Setter Property="BorderThickness" Value="1" />
@@ -154,7 +154,7 @@
     </Style>
 
     <!--  MenuItem Style  -->
-    <Style x:Key="ModernMenuItemStyle" TargetType="MenuItem">
+    <Style x:Key="MenuItemStyle" TargetType="MenuItem">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Foreground" Value="{DynamicResource PrimaryText}" />
         <Setter Property="Height" Value="30" />

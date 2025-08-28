@@ -117,9 +117,9 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
 
 
 
-    private Border _slider1;
-    private RepeatButton _slider2;
-    private RepeatButton _slider3;
+    private Border? _slider1;
+    private RepeatButton? _slider2;
+    private RepeatButton? _slider3;
     private void RegisterSliderParts()
     {
         ZoomSlider.ApplyTemplate();
@@ -345,7 +345,6 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
             e.Handled = true;
             return;
         }
-
         // Spacebar 
         else if (e.Key == Key.Space)
         {
@@ -353,7 +352,6 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
             e.Handled = true;
             return;
         }
-
         // Arrow keys
         else if (e.Key == Key.Left)
             _lastMousePos.X--;
