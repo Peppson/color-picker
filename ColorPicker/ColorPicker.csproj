@@ -1,7 +1,7 @@
 ﻿ <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <AssemblyName>ColorGrab</AssemblyName>
-    <ApplicationIcon>Assets\Icon_32.ico</ApplicationIcon>
+    <ApplicationIcon>Assets\FullSizeIcon_32.ico</ApplicationIcon>
     <TargetFramework>net9.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -33,11 +33,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Assets\Icon_32.ico" />
+    <None Remove="Assets\FullSizeIcon_32.ico" />
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Assets\Icon_32.ico">
+    <Resource Include="Assets\FullSizeIcon_32.ico">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>

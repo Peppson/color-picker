@@ -23,7 +23,7 @@
             Width="18"
             Height="18"
             Margin="5,0,1,0"
-            Source="/Assets/Icon_32.ico" />
+            Source="/Assets/FullSizeIcon_32.ico" />
 
         <TextBlock
             Grid.Column="1"
