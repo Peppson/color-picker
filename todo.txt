@@ -1,0 +1,9 @@
+dotnet publish -c Release -r win-x64 --self-contained true -o "$HOME/Desktop"
+
+
+
+lazy load settings component
+window startup center firstboot
+
+welcomepage
+settings component

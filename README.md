@@ -46,7 +46,8 @@ dotnet run -c Release
 ### Considerations
 - Should it capture its own window colors? _(currently off)_
 - Auto-copy last capture to clipboard?
-- Option to change global hotkey? _(Windows hook)_
+- Option to change global hotkey? _(windows hook)_
+- Keep sampling active with no mouse movement? To capture say a video
 
 <br>
 

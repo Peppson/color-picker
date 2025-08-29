@@ -1,37 +1,47 @@
 ﻿ <Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <AssemblyName>ColorGrab</AssemblyName>
-    <ApplicationIcon>Assets\FullSizeIcon_32.ico</ApplicationIcon>
+    <AppVersion>1.0.1</AppVersion>
     <TargetFramework>net9.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UseWPF>true</UseWPF>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <UseWPF>true</UseWPF>
     <Platforms>AnyCPU;x64</Platforms>
+    <ApplicationIcon>Assets\FullSizeIcon_32.ico</ApplicationIcon>
+  </PropertyGroup>
+
+
+  <!-- Version numbers -->
+  <PropertyGroup>
+    <Version>$(AppVersion)</Version>                            <!-- Global version -->
+    <FileVersion>$(AppVersion).0</FileVersion>                  <!-- File properties -->
+    <AssemblyVersion>$(AppVersion).0</AssemblyVersion>          <!-- Needed? -->  <!-- Internal use -->
+  </PropertyGroup>
+
+
+  <!-- Build Config -->
+  <PropertyGroup Condition="'$(Configuration)' != 'Release'">
+    <OutputType>Exe</OutputType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <OutputType>WinExe</OutputType>
+    <Optimize>true</Optimize>
+    <DebugType>None</DebugType>
     <DefineConstants>TRACE;RELEASE</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)' != 'Release'">
-    <OutputType>Exe</OutputType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release' AND '$(PublishDir)' != ''">
     <PublishSingleFile>true</PublishSingleFile>
     <SelfContained>true</SelfContained>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-    <DebugType>None</DebugType>
     <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <NoWarn>$(NoWarn);NU1701</NoWarn>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-  </PropertyGroup>
 
+  <!-- Assets -->
   <ItemGroup>
     <None Remove="Assets\FullSizeIcon_32.ico" />
   </ItemGroup>
@@ -41,11 +51,18 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
+  
 
+  <!-- Misc -->
   <ItemGroup>
     <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
     <PackageReference Include="System.Drawing.Common" Version="9.0.8" />
   </ItemGroup>
+
+  <PropertyGroup>
+    <NoWarn>$(NoWarn);NU1701</NoWarn>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
 
   <ItemGroup>
     <Compile Update="Properties\Settings.Designer.cs">

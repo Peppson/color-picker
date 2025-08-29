@@ -98,8 +98,7 @@
             <Grid
                 x:Name="ColorView"
                 Grid.Column="2"
-                VerticalAlignment="Stretch"
-                MouseLeftButtonUp="ColorView_MouseLeftButtonUp">
+                VerticalAlignment="Stretch">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="auto" />

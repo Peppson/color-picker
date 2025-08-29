@@ -1,42 +1,23 @@
-﻿using System.Runtime.InteropServices;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Interop;
+using ColorPicker.Services;
+using ColorPicker.Settings;
 
 namespace ColorPicker;
 
 public partial class MainWindow : Window
 {
-    [LibraryImport("user32.dll")]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static partial bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
-
-    [LibraryImport("user32.dll")]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static partial bool UnregisterHotKey(IntPtr hWnd, int id);
-
-    private const int HOTKEY_ID = 9000;   
-
     public MainWindow()
     {
         InitializeComponent();
+        SourceInitialized += OnSourceInitialized;
         StateChanged += OnWindowStateChanged;
         SizeChanged += OnWindowSizeOrLocationChanged;
         LocationChanged += OnWindowSizeOrLocationChanged;
-        SourceInitialized += OnSourceInitialized;
         Closing += OnWindowClose;
 
+        Appstate.Load();
         SetWindowPosition();
-    }
-
-    private void OnWindowStateChanged(object? sender, EventArgs e)
-    {
-        bool isMinimized = WindowState == WindowState.Minimized;
-        ColorPicker.SetIsMinimized(isMinimized);
-    }
-
-    private void OnWindowSizeOrLocationChanged(object? sender, EventArgs e)
-    {
-        ColorPicker.UpdateAppWindowPos(this);
     }
 
     private void OnSourceInitialized(object? sender, EventArgs e)
@@ -45,62 +26,41 @@ public partial class MainWindow : Window
         var hwndSource = (HwndSource)PresentationSource.FromVisual(this);
         hwndSource.AddHook(PreventMaximize);
 
-        SetupGlobalHotkey(); // Setup Ctrl+Spacebar as global hotkey for pause/resume
+        GlobalHotkeyManager.Register(this); 
+    }
+
+    private void OnWindowStateChanged(object? sender, EventArgs e)
+    {
+        Appstate.IsMinimize = (WindowState == WindowState.Minimized);
+        ColorPicker.SetIsMinimized(Appstate.IsMinimize); // todo
+    }
+
+    private void OnWindowSizeOrLocationChanged(object? sender, EventArgs e)
+    {
+        ColorPicker.UpdateAppWindowPos(this); // todo hmm
     }
 
     private void OnWindowClose(object? sender, System.ComponentModel.CancelEventArgs e)
-    {
-        Properties.Settings.Default.WindowTop = this.Top;
-        Properties.Settings.Default.WindowLeft = this.Left;
-        Properties.Settings.Default.ColorType = ColorPicker.GetColorType();
-        Properties.Settings.Default.Save();
-
-        // Unregister Ctrl+Spacebar hotkey
-        var helper = new WindowInteropHelper(this);
-        UnregisterHotKey(helper.Handle, HOTKEY_ID);
+    {   
+        Appstate.Save(this.Top, this.Left);
+        GlobalHotkeyManager.UnRegister(this); 
     }
 
     private void SetWindowPosition()
-    {
-        if (Properties.Settings.Default.WindowTop == 0 || Properties.Settings.Default.WindowLeft == 0)
+    {   
+        if (!Appstate.SetWindowPosOnStartup || Appstate.IsFirstBoot)
+        {
+            this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             return;
+        }
 
-        this.Top = Properties.Settings.Default.WindowTop;
-        this.Left = Properties.Settings.Default.WindowLeft;
-    }
-
-    private void SetupGlobalHotkey()
-    {
-        const uint CtrlKey  = 0x0002;
-        const uint spacebarKey = 0x20;
-
-        var helper = new WindowInteropHelper(this);
-        RegisterHotKey(helper.Handle, HOTKEY_ID, CtrlKey , spacebarKey);
-        HwndSource source = HwndSource.FromHwnd(helper.Handle);
-        source.AddHook(HandleGlobalHotkey);
+        this.Top = Appstate.WindowTop;
+        this.Left = Appstate.WindowLeft;
     }
 
     private IntPtr PreventMaximize(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
     {
-        if (msg == 0x00A3)
-        {
-            handled = true;
-            return IntPtr.Zero;
-        }
-
-        return IntPtr.Zero;
-    }
-
-    private IntPtr HandleGlobalHotkey(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
-    {
-        const int WM_HOTKEY = 0x0312;
-
-        if (msg == WM_HOTKEY && wParam.ToInt32() == HOTKEY_ID)
-        {
-            ColorPicker.ToggleSampling();
-            handled = true;
-        }
-
+        handled = (msg == 0x00A3);
         return IntPtr.Zero;
     }
 }

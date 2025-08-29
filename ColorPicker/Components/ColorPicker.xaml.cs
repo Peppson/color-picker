@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows;
@@ -243,7 +244,7 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
             return;
         _lastMousePos = p;
 
-        UpdateColors(p); 
+        UpdateColors(p);
     }
 
     private void OnLoaded(object? sender, RoutedEventArgs e)
@@ -307,7 +308,7 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
 
     private void CopyButton_Click(object sender, RoutedEventArgs e)
     {
-        CopyColorToClipboard();
+        _ = CopyColorToClipboard();
         UpdateMessageColor(_invertedBrush);
         e.Handled = true;
     }
@@ -318,29 +319,12 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         e.Handled = true;
     }
     
-    private void ColorView_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-    {   
-        if (_isDropdownMenuOpen) return;
-
-        // Ignore clicks that hit a button
-        if (e.OriginalSource is DependencyObject source)
-        {
-            while (source != null && source != AppGrid)
-            {
-                if (source is Button || source is Border || source is Slider) return;
-                source = VisualTreeHelper.GetParent(source);
-            }
-        }
-
-        ToggleRunning_Click(sender, e);
-    }
-
     private void Keyboard_Click(object sender, KeyEventArgs e)
     {
         // CTRL + C
         if (e.Key == Key.C && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
         {
-            CopyColorToClipboard();
+            _ = CopyColorToClipboard();
             UpdateMessageColor(_invertedBrush);
             e.Handled = true;
             return;
@@ -517,7 +501,7 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
 
 
     private void UpdateColors(POINT p)
-    {
+    {   
         uint colorRef = GetColorAtPos(p);
 
         byte r = (byte)(colorRef & 0x000000FF);
@@ -677,12 +661,20 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         return $"{c * 100:F0}%,{m * 100:F0}%,{y * 100:F0}%,{k * 100:F0}%";
     }
 
-    public async void CopyColorToClipboard()
+    public async Task CopyColorToClipboard()
     {
         if (string.IsNullOrEmpty(CurrentTextContent)) return;
 
-        DB.Print($"Copy: {CurrentTextContent}");
-        Clipboard.SetText(CurrentTextContent);
+        try
+        {
+            Clipboard.SetText(CurrentTextContent);
+        }
+        catch
+        {
+            await ShowMessageAsync("Error!", 2000);
+            return;
+        }
+
         await ShowMessageAsync("Copied!", 3000);
     }
 
