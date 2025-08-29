@@ -12,6 +12,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using ColorPicker.Models;
 using ColorPicker.Services;
+using ColorPicker.Settings;
 using FontAwesome.WPF;
 
 namespace ColorPicker.Components;
@@ -50,7 +51,6 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
     }
 
     private bool _isEnabled = true;
-    private bool _isMinimized = false;
     private bool _isMessageOpen = false;
     private bool _isDropdownMenuOpen = false;
     private DateTime _lastUpdate = DateTime.UtcNow;
@@ -97,7 +97,7 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
     public int ZoomPercent => (_zoomLevel - 11) * 100 / (91 - 11);
 
 
-    private System.Drawing.Rectangle _appWindowPos;
+    /* private System.Drawing.Rectangle _appWindowPos;
     public void UpdateAppWindowPos(Window window)
     {
         _appWindowPos = new System.Drawing.Rectangle(
@@ -106,7 +106,7 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
             (int)window.Width,
             (int)window.Height
         );
-    }
+    } */
 
     
 
@@ -227,7 +227,7 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         // Clamp to max 120fps color updates
         const int minInterval = 1000 / 120;
 
-        if (!_isEnabled || _isMinimized)
+        if (!_isEnabled || Appstate.IsMinimize)
             return;
 
         if (DateTime.UtcNow < _lastUpdate.AddMilliseconds(minInterval))
@@ -237,7 +237,15 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         if (!GetCursorPos(out POINT p))
             return;
 
-        if (_appWindowPos.Contains(p.X, p.Y))
+
+
+
+       
+
+        
+
+
+        if (Appstate.MainWindowPos.Contains(p.X, p.Y))
             return;
 
         if (_lastMousePos.X == p.X && _lastMousePos.Y == p.Y)
@@ -376,11 +384,6 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         DB.Print($"Color sampling: {_isEnabled}");
     }
 
-    public void SetIsMinimized(bool minimized)
-    {
-        _isMinimized = minimized;
-        DB.Print($"Window minimized: {_isMinimized}");
-    }
 
     private void SetIsRunningIcon(bool running)
     {

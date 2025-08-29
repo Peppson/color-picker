@@ -1,9 +1,10 @@
+using System.Windows;
 using ColorPicker.Components;
 
 namespace ColorPicker.Settings;
 
 public static class Appstate
-{   
+{
     // States
     public static bool IsFirstBoot { get; set; } = false;
     public static bool IsAlwaysOnTop { get; set; } = false;
@@ -11,21 +12,26 @@ public static class Appstate
     public static bool GlobalKeybind { get; set; } = false;
     public static double WindowTop { get; set; }
     public static double WindowLeft { get; set; }
-    
+
     // Settings
     public static bool CaptureOnSelf { get; set; } = AppConfig.CaptureColorOnSelf;
     public static bool SetWindowPosOnStartup { get; set; } = AppConfig.SetWindowPosOnStartup;
     public static bool BootWithCaptureEnabled { get; set; } = AppConfig.BootWithCaptureEnabled;
 
+    // References
+    public static Window MainWindow { get; private set; } = null!;
+    public static System.Drawing.Rectangle MainWindowPos { get; private set; }
 
 
 
 
-    public static void Load()
+    public static void Init(Window window)
     {
+        MainWindow = window;
+
         WindowTop = Properties.Settings.Default.WindowTop;
         WindowLeft = Properties.Settings.Default.WindowLeft;
-        
+
         //IsFirstBoot = Properties.Settings.Default.IsFirstBoot;
     }
 
@@ -40,28 +46,13 @@ public static class Appstate
         Properties.Settings.Default.Save();
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    public static void UpdateMainWindowPos()
+    {
+        MainWindowPos = new System.Drawing.Rectangle(
+            (int)MainWindow.Left,
+            (int)MainWindow.Top,
+            (int)MainWindow.Width,
+            (int)MainWindow.Height
+        );
+    }
 }

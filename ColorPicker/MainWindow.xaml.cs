@@ -16,8 +16,9 @@ public partial class MainWindow : Window
         LocationChanged += OnWindowSizeOrLocationChanged;
         Closing += OnWindowClose;
 
-        Appstate.Load();
+        Appstate.Init(this);
         SetWindowPosition();
+        //IsFirstBootWindow(); 
     }
 
     private void OnSourceInitialized(object? sender, EventArgs e)
@@ -26,18 +27,17 @@ public partial class MainWindow : Window
         var hwndSource = (HwndSource)PresentationSource.FromVisual(this);
         hwndSource.AddHook(PreventMaximize);
 
-        GlobalHotkeyManager.Register(this); 
+        GlobalHotkeyManager.Register(this);
     }
 
     private void OnWindowStateChanged(object? sender, EventArgs e)
     {
         Appstate.IsMinimize = (WindowState == WindowState.Minimized);
-        ColorPicker.SetIsMinimized(Appstate.IsMinimize); // todo
     }
 
     private void OnWindowSizeOrLocationChanged(object? sender, EventArgs e)
     {
-        ColorPicker.UpdateAppWindowPos(this); // todo hmm
+        Appstate.UpdateMainWindowPos();
     }
 
     private void OnWindowClose(object? sender, System.ComponentModel.CancelEventArgs e)
@@ -58,8 +58,10 @@ public partial class MainWindow : Window
         this.Left = Appstate.WindowLeft;
     }
 
+    int test = 0;
     private IntPtr PreventMaximize(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
     {
+        //Console.WriteLine(test++); todo spams
         handled = (msg == 0x00A3);
         return IntPtr.Zero;
     }
