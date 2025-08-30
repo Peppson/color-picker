@@ -30,7 +30,7 @@
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch">
                 <Image
-                    x:Name="ZoomImage"
+                    x:Name="ZoomView"
                     Margin="0,0,0,0"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"

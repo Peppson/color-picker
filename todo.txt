@@ -12,3 +12,14 @@ settings component
 
 settings:
 BootWithCaptureEnabled
+
+
+
+    // keyboard modifiers
+    /* const uint MOD_ALT     = 0x0001;
+    const uint MOD_CONTROL = 0x0002;
+    const uint MOD_SHIFT   = 0x0004;
+    const uint MOD_WIN     = 0x0008; */
+
+
+

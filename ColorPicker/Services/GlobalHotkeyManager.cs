@@ -6,14 +6,6 @@ namespace ColorPicker.Services;
 
 public static partial class GlobalHotkeyManager
 {
-    [LibraryImport("user32.dll")]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static partial bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
-
-    [LibraryImport("user32.dll")]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static partial bool UnregisterHotKey(IntPtr hWnd, int id);
-
     private const int HOTKEY_ID = 9000;
     private static HwndSource? _source;
     
@@ -22,7 +14,7 @@ public static partial class GlobalHotkeyManager
         var helper = new WindowInteropHelper(window);
 
         // Try to set hotkey // todo unregister before new
-        if (!RegisterHotKey(helper.Handle, HOTKEY_ID, modifiers, key))
+        if (!Win32Api.RegisterHotKey(helper.Handle, HOTKEY_ID, modifiers, key))
         {
             // todo
             MessageBox.Show("Failed to register global hotkey. It might be already in use by another application.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -37,7 +29,7 @@ public static partial class GlobalHotkeyManager
         if (_source == null) return;
 
         var helper = new WindowInteropHelper(window);
-        UnregisterHotKey(helper.Handle, HOTKEY_ID);
+        Win32Api.UnregisterHotKey(helper.Handle, HOTKEY_ID);
         _source.RemoveHook(HandleHotkey);
         _source = null;
     }
@@ -48,7 +40,7 @@ public static partial class GlobalHotkeyManager
 
         if (msg == WM_HOTKEY && wParam.ToInt32() == HOTKEY_ID)
         {
-            DB.Print("Global hotkey pressed");
+            Console.WriteLine("Global hotkey pressed");
             //ColorPicker.ToggleSampling(); todo
             handled = true;
         }

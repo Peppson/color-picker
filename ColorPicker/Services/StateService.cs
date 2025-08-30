@@ -1,11 +1,10 @@
 using System.Windows;
-using ColorPicker.Components;
 using ColorPicker.Models;
-using ColorPicker.Services;
+using ColorPicker.Settings;
 
-namespace ColorPicker.Settings;
+namespace ColorPicker.Services;
 
-public static class Appstate
+public static class State
 {
     // States
     public static bool IsFirstBoot { get; set; }
@@ -22,40 +21,65 @@ public static class Appstate
     // Refs
     public static Window MainWindow { get; private set; } = null!;
     public static System.Drawing.Rectangle MainWindowPos { get; private set; }
+    
+    private static bool _isResetting = false;
 
     // Methods
     public static void Init(Window window)
     {
         MainWindow = window;
+        LoadFromMemory();
 
+        #if !RELEASE
+            StartupLogDebug();
+        #endif
+    }
+
+    public static void LoadFromMemory()
+    { 
         IsFirstBoot = Properties.Settings.Default.IsFirstBoot;
         //GlobalKeybind = Properties.Settings.Default.GlobalKeybind;
         WindowTop = Properties.Settings.Default.WindowTop;
         WindowLeft = Properties.Settings.Default.WindowLeft;
         IsEnabled = Properties.Settings.Default.BootWithCaptureEnabled;
 
-        CurrentColorType = ColorService.ConvertStringToColorType(Properties.Settings.Default.ColorType);
+        CurrentColorType = ColorService.StringToColorType(Properties.Settings.Default.ColorType);
         CaptureOnSelf = Properties.Settings.Default.CaptureColorOnSelf;
         SetWindowPosOnStartup = Properties.Settings.Default.SetWindowPosOnStartup;
-
-        #if !RELEASE
-            DebugStartupLog();
-        #endif
     }
 
-    public static void Save(double top, double left)
+    public static void Save()
     {   
-        
+        if (_isResetting) return; // Don't save if reset
+
+
         Properties.Settings.Default.IsFirstBoot = false; // todo
 
         //Properties.Settings.Default.GlobalKeybind = GlobalKeybind;
-        Properties.Settings.Default.WindowTop = top;
-        Properties.Settings.Default.WindowLeft = left;
+
+        Properties.Settings.Default.WindowTop = MainWindow.Top;
+        Properties.Settings.Default.WindowLeft = MainWindow.Left;
+
         Properties.Settings.Default.BootWithCaptureEnabled = false; // todo
 
         //Properties.Settings.Default.ColorType = MainWindow.ColorPicker.GetColorType();
 
         Properties.Settings.Default.Save();
+    }
+
+    public static void Reset()
+    {   
+        Console.WriteLine("Resetting settings...");
+        _isResetting = true;
+
+        Properties.Settings.Default.Reset();
+        Properties.Settings.Default.Save();
+
+        // todo
+        var currentExe = Environment.ProcessPath ?? throw new InvalidOperationException("Could not get process path");
+        System.Diagnostics.Process.Start(currentExe);
+    
+        Application.Current.Shutdown();
     }
 
     public static void UpdateMainWindowPos()
@@ -68,16 +92,16 @@ public static class Appstate
         );
     }
 
-    private static void DebugStartupLog()
+    private static void StartupLogDebug()
     {
-        DB.Print($"\n--- Initialized v{AppConfig.VersionNumber} ---");
-        DB.Print($"- IsFirstBoot: {IsFirstBoot}");
-        DB.Print($"- WindowTop: {WindowTop}");
-        DB.Print($"- WindowLeft: {WindowLeft}");
-        DB.Print($"- SetWindowPosOnStartup: {SetWindowPosOnStartup}");
-        DB.Print($"- IsEnabled: {IsEnabled}");
-        DB.Print($"- CurrentColorType: {CurrentColorType}");
-        DB.Print($"- CaptureOnSelf: {CaptureOnSelf}");
-        DB.Print("");
+        Console.WriteLine($"\n--- DEBUG v{AppConfig.VersionNumber} ---");
+        Console.WriteLine($"- IsFirstBoot: {IsFirstBoot}");
+        Console.WriteLine($"- WindowTop: {WindowTop}");
+        Console.WriteLine($"- WindowLeft: {WindowLeft}");
+        Console.WriteLine($"- SetWindowPosOnStartup: {SetWindowPosOnStartup}");
+        Console.WriteLine($"- IsEnabled: {IsEnabled}");
+        Console.WriteLine($"- CurrentColorType: {CurrentColorType}");
+        Console.WriteLine($"- CaptureOnSelf: {CaptureOnSelf}");
+        Console.WriteLine("");
     }
 }

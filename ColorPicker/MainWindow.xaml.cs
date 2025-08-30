@@ -10,21 +10,23 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        this.Topmost = true;
+
         SourceInitialized += OnSourceInitialized;
         StateChanged += OnWindowStateChanged;
         SizeChanged += OnWindowSizeOrLocationChanged;
         LocationChanged += OnWindowSizeOrLocationChanged;
         Closing += OnWindowClose;
 
-        Appstate.Init(this);
+        State.Init(this);
         SetWindowPosition();
-        //IsFirstBootWindow(); 
+        IsFirstBootWindow();
     }
 
     private void OnSourceInitialized(object? sender, EventArgs e)
     {
         // Prevent maximize from doubleclick on titlebar
-        var hwndSource = (HwndSource)PresentationSource.FromVisual(this);
+        var hwndSource = (HwndSource)PresentationSource.FromVisual(this); 
         hwndSource.AddHook(PreventMaximize);
 
         GlobalHotkeyManager.Register(this);
@@ -32,30 +34,45 @@ public partial class MainWindow : Window
 
     private void OnWindowStateChanged(object? sender, EventArgs e)
     {
-        Appstate.IsMinimized = (WindowState == WindowState.Minimized);
+        State.IsMinimized = (WindowState == WindowState.Minimized);
     }
 
     private void OnWindowSizeOrLocationChanged(object? sender, EventArgs e)
     {
-        Appstate.UpdateMainWindowPos();
+        State.UpdateMainWindowPos();
     }
 
     private void OnWindowClose(object? sender, System.ComponentModel.CancelEventArgs e)
     {   
-        Appstate.Save(this.Top, this.Left);
+        State.Save();
         GlobalHotkeyManager.UnRegister(this);
     }
 
     private void SetWindowPosition()
     {   
-        if (!Appstate.SetWindowPosOnStartup || Appstate.IsFirstBoot)
+        if (!State.SetWindowPosOnStartup || State.IsFirstBoot)
         {
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             return;
         }
 
-        this.Top = Appstate.WindowTop;
-        this.Left = Appstate.WindowLeft;
+        this.Top = State.WindowTop;
+        this.Left = State.WindowLeft;
+    }
+
+    private void IsFirstBootWindow()
+    {   
+        if (!State.IsFirstBoot) return;
+
+        MessageBox.Show( // todo
+            "Welcome to ColorPicker!\n\n" +
+            "To get started, hover over any area of your screen to pick a color.\n\n" +
+            "You can change settings by clicking the gear icon in the top-right corner.\n\n" +
+            "Enjoy!",
+            "Welcome to ColorPicker",
+            MessageBoxButton.OK,
+            MessageBoxImage.Information
+        );
     }
 
     private IntPtr PreventMaximize(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)

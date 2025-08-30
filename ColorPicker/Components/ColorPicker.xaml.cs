@@ -8,7 +8,6 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using ColorPicker.Models;
 using ColorPicker.Services;
@@ -18,178 +17,7 @@ using FontAwesome.WPF;
 namespace ColorPicker.Components;
 
 public partial class ColorPicker : UserControl, INotifyPropertyChanged
-{
-    [LibraryImport("user32.dll")]
-    private static partial IntPtr GetDC(IntPtr hWnd);
-
-    [LibraryImport("gdi32.dll")]
-    private static partial uint GetPixel(IntPtr hdc, int nXPos, int nYPos);
-
-    [LibraryImport("user32.dll")]
-    private static partial int ReleaseDC(IntPtr hWnd, IntPtr hDC);
-
-    [LibraryImport("user32.dll")]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static partial bool GetCursorPos(out POINT lpPoint);
-
-    [StructLayout(LayoutKind.Sequential)]
-    private struct POINT
-    {
-        public int X;
-        public int Y;
-    }
-
-
-
-
-
-    
-    public event PropertyChangedEventHandler? PropertyChanged;
-    protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
-
-    private bool _isMessageOpen = false;
-    private DateTime _lastUpdate = DateTime.UtcNow;
-    private POINT _lastMousePos;
-    private SolidColorBrush _currentBrush = new(Colors.White);
-    private SolidColorBrush _invertedBrush = new(Colors.Black);
-    
-
-    private static string CurrentTextContent { get; set; } = "#FFFFFF";
-
-    
-    private ColorTypes _colorType;
-    public ColorTypes CurrentColorType // HEX, RGB...
-    {
-        get => _colorType;
-        set
-        {
-            if (_colorType != value)
-            {
-                _colorType = value;
-                OnPropertyChanged(nameof(CurrentColorType));
-            }
-        }
-    }
-
-    
-    private int _zoomLevel = AppConfig.InitialZoomLevel;
-    public int ZoomLevel
-    {
-        get => _zoomLevel;
-        set
-        {
-            if (_zoomLevel != value)
-            {
-                _zoomLevel = value;
-                OnPropertyChanged(nameof(ZoomLevel));
-                OnPropertyChanged(nameof(ZoomPercent));
-                UpdateZoomView(_lastMousePos, _zoomLevel);
-            }
-        }
-    }
-
-    
-    public int ZoomPercent => 
-        (_zoomLevel - (int)AppConfig.MinZoomLevel) * 100
-        / ((int)AppConfig.MaxZoomLevel - (int)AppConfig.MinZoomLevel); // Ugly af
-
-
-    private CancellationTokenSource? _messageCts;
-
-
-
-
-
-
-
-    private Border? _slider1;
-    private RepeatButton? _slider2;
-    private RepeatButton? _slider3;
-    private void RegisterSliderParts()
-    {
-        ZoomSlider.ApplyTemplate();
-
-        if (ZoomSlider.Template.FindName("PART_Track", ZoomSlider) is Track track)
-        {
-            track.DecreaseRepeatButton.ApplyTemplate();
-            track.IncreaseRepeatButton.ApplyTemplate();
-            track.Thumb.ApplyTemplate();
-
-            _slider2 = track.DecreaseRepeatButton as RepeatButton;
-            _slider3 = track.IncreaseRepeatButton as RepeatButton;
-
-            if (track.Thumb.Template.FindName("PART_ThumbBorder", track.Thumb) is Border thumbBorder)
-            {
-                _slider1 = thumbBorder;
-            }
-        }
-    }
-
-
-
-
-
-
-    [LibraryImport("user32.dll")]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static partial bool SetCursorPos(int X, int Y);
-    private bool _isDragging = false;
-    private POINT _dragStartMouse;
-    private POINT _dragStartPos;
-
-    private void ZoomImage_MouseDown(object sender, MouseButtonEventArgs e)
-    {
-        if (e.LeftButton == MouseButtonState.Pressed)
-        {
-            _isDragging = true;
-            Mouse.OverrideCursor = Cursors.None;
-
-            if (GetCursorPos(out _dragStartMouse))
-                _dragStartPos = _lastMousePos;
-
-            ZoomImage.CaptureMouse();
-        }
-    }
-
-    private void ZoomImage_MouseMove(object sender, MouseEventArgs e)
-    {
-        if (_isDragging && GetCursorPos(out POINT currentMouse))
-        {
-            int dx = currentMouse.X - _dragStartMouse.X;
-            int dy = currentMouse.Y - _dragStartMouse.Y;
-            _lastMousePos.X = _dragStartPos.X + dx;
-            _lastMousePos.Y = _dragStartPos.Y + dy;
-
-            UpdateZoomView(_lastMousePos, ZoomLevel);
-            UpdateColors(_lastMousePos);
-        }
-    }
-
-    private void ZoomImage_MouseUp(object sender, MouseButtonEventArgs e)
-    {
-        if (_isDragging)
-        {
-            _isDragging = false;
-            ZoomImage.ReleaseMouseCapture();
-
-            // Set mouse pos back where we started
-            SetCursorPos(_dragStartMouse.X, _dragStartMouse.Y);
-            Mouse.OverrideCursor = null;
-        }
-    }
-
-
-
-
-
-
-
-
-
+{    
     public ColorPicker()
     {
         InitializeComponent();
@@ -199,28 +27,28 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         Unloaded += OnUnloaded;
         CompositionTarget.Rendering += OnNewFrame!;
 
-        ZoomImage.MouseWheel += ZoomImage_MouseWheel;
-        ZoomImage.MouseDown += ZoomImage_MouseDown;
-        ZoomImage.MouseMove += ZoomImage_MouseMove;
-        ZoomImage.MouseUp += ZoomImage_MouseUp;
+        ZoomView.MouseWheel += ZoomView_MouseWheel;
+        ZoomView.MouseDown += ZoomView_MouseDown;
+        ZoomView.MouseMove += ZoomView_MouseMove;
+        ZoomView.MouseUp += ZoomView_MouseUp;
     }
 
     private void OnNewFrame(object sender, EventArgs e)
     {
-        // Clamp to max 120fps color updates
+        // Clamp to max 120fps color updates, WPF framerates is wonky sometimes...
         const int minInterval = 1000 / 120;
 
-        if (!Appstate.IsEnabled || Appstate.IsMinimized)
+        if (!State.IsEnabled || State.IsMinimized)
             return;
 
         if (DateTime.UtcNow < _lastUpdate.AddMilliseconds(minInterval))
             return;
         _lastUpdate = DateTime.UtcNow;
 
-        if (!GetCursorPos(out POINT p))
+        if (!Win32Api.GetCursorPos(out POINT p))
             return;
 
-        if (Appstate.MainWindowPos.Contains(p.X, p.Y))
+        if (State.MainWindowPos.Contains(p.X, p.Y))
             return;
 
         if (_lastMousePos.X == p.X && _lastMousePos.Y == p.Y)
@@ -232,24 +60,22 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
 
     private void OnLoaded(object? sender, RoutedEventArgs e)
     {
-        Window window = Window.GetWindow(this)!;
-        window.PreviewKeyDown += Keyboard_Click;
+        State.MainWindow.PreviewKeyDown += Keyboard_Click;
 
-        CurrentColorType = ColorService.ConvertStringToColorType(Properties.Settings.Default.ColorType); // todo
+        CurrentColorType = ColorService.StringToColorType(Properties.Settings.Default.ColorType); // todo
 
         if (AppConfig.IsEnabledOverride != null)
-            Appstate.IsEnabled = AppConfig.IsEnabledOverride.Value;
+            State.IsEnabled = AppConfig.IsEnabledOverride.Value;
 
-        SetIsEnabledIcon(Appstate.IsEnabled);    
+        SetIsEnabledIcon(State.IsEnabled);
         RegisterSliderParts();
-        UpdateColorsStatic(); 
-        DB.Print($"Loaded color type: {CurrentColorType}");
+        UpdateColorsStatic();
+        Console.WriteLine($"Loaded color type: {CurrentColorType}");
     }
 
     private void OnUnloaded(object? sender, RoutedEventArgs e)
     {
-        Window window = Window.GetWindow(this)!;
-        window.PreviewKeyDown -= Keyboard_Click;
+        State.MainWindow.PreviewKeyDown -= Keyboard_Click;
     }
 
     private void DropdownButton_Click(object sender, MouseButtonEventArgs e)
@@ -277,7 +103,6 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         if (sender is MenuItem menuItem && menuItem.Tag is ColorTypes colorType)
         {
             CurrentColorType = colorType;
-            DB.Print($"Color type set: {CurrentColorType}");
             UpdateColorsStatic();
         }
         e.Handled = true;
@@ -285,31 +110,34 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
 
     private void CopyButton_Click(object sender, RoutedEventArgs e)
     {
-        _ = CopyColorToClipboard();
+        //_ = CopyColorToClipboard();
+        Console.WriteLine("Copy color to clipboard (todo)");
         UpdateMessageColor(_invertedBrush);
         e.Handled = true;
     }
 
     private void ToggleEnabled_Click(object sender, MouseButtonEventArgs e)
     {
-        ToggleSampling();
+        ToggleIsEnabled();
         e.Handled = true;
     }
-    
+
     private void Keyboard_Click(object sender, KeyEventArgs e)
     {
         // CTRL + C
         if (e.Key == Key.C && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
         {
-            _ = CopyColorToClipboard();
+            //_ = CopyColorToClipboard(); todo
+            Console.WriteLine("Copy color to clipboard (todo)");
             UpdateMessageColor(_invertedBrush);
             e.Handled = true;
             return;
         }
+
         // Spacebar 
         else if (e.Key == Key.Space)
         {
-            ToggleSampling();
+            ToggleIsEnabled();
             e.Handled = true;
             return;
         }
@@ -322,12 +150,12 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
             _lastMousePos.Y--;
         else if (e.Key == Key.Down)
             _lastMousePos.Y++;
-           
+
         UpdateColors(_lastMousePos);
         e.Handled = true;
     }
 
-    private void ZoomImage_MouseWheel(object sender, MouseWheelEventArgs e)
+    private void ZoomView_MouseWheel(object sender, MouseWheelEventArgs e)
     {
         const int step = 2;
 
@@ -339,18 +167,18 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         e.Handled = true;
     }
 
-    public void ToggleSampling()
+    public void ToggleIsEnabled()
     {
-        Appstate.IsEnabled = !Appstate.IsEnabled;
-        SetIsEnabledIcon(Appstate.IsEnabled);
-        DB.Print($"Color sampling: {Appstate.IsEnabled}");
+        State.IsEnabled = !State.IsEnabled;
+        SetIsEnabledIcon(State.IsEnabled);
+        Console.WriteLine($"Color sampling: {State.IsEnabled}");
     }
 
-    public void SetSampling(bool enabled)
+    public void SetIsEnabled(bool enabled)
     {
-        Appstate.IsEnabled = enabled;
-        SetIsEnabledIcon(Appstate.IsEnabled);
-        DB.Print($"Color sampling: {Appstate.IsEnabled}");
+        State.IsEnabled = enabled;
+        SetIsEnabledIcon(State.IsEnabled);
+        Console.WriteLine($"Color sampling: {State.IsEnabled}");
     }
 
     private void SetIsEnabledIcon(bool running)
@@ -358,57 +186,68 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         IsEnabledIcon.Icon = running ? FontAwesomeIcon.Pause : FontAwesomeIcon.Play;
     }
 
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public async Task ShowMessageAsync(string message, int durationMs)
+    private void ZoomView_MouseDown(object sender, MouseButtonEventArgs e)
     {
-        _isMessageOpen = true;
-
-        // Cancel any previous messages
-        _messageCts?.Cancel();
-        _messageCts = new CancellationTokenSource();
-        var token = _messageCts.Token;
-
-        Message.Text = message;
-
-        // Fade in
-        var fadeIn = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(1));
-        Message.BeginAnimation(OpacityProperty, fadeIn);
-
-        // Fade out
-        try
+        if (e.LeftButton == MouseButtonState.Pressed)
         {
-            await Task.Delay(durationMs, token);
-            var fadeOut = new DoubleAnimation(1, 0, TimeSpan.FromMilliseconds(250));
-            Message.BeginAnimation(OpacityProperty, fadeOut);
-        }
-        catch (TaskCanceledException) { }
+            _isDragging = true;
+            Mouse.OverrideCursor = Cursors.None;
 
-        _isMessageOpen = false;
+            if (Win32Api.GetCursorPos(out _dragStartMouse))
+                _dragStartPos = _lastMousePos;
+
+            ZoomView.CaptureMouse();
+        }
+    }
+
+    private void ZoomView_MouseMove(object sender, MouseEventArgs e)
+    {
+        if (_isDragging && Win32Api.GetCursorPos(out POINT currentMouse))
+        {
+            int dx = currentMouse.X - _dragStartMouse.X;
+            int dy = currentMouse.Y - _dragStartMouse.Y;
+            _lastMousePos.X = _dragStartPos.X + dx;
+            _lastMousePos.Y = _dragStartPos.Y + dy;
+
+            UpdateZoomView(_lastMousePos, ZoomLevel);
+            UpdateColors(_lastMousePos);
+        }
+    }
+
+    private void ZoomView_MouseUp(object sender, MouseButtonEventArgs e)
+    {
+        if (_isDragging)
+        {
+            _isDragging = false;
+            ZoomView.ReleaseMouseCapture();
+
+            // Set mouse pos back where we started
+            Win32Api.SetCursorPos(_dragStartMouse.X, _dragStartMouse.Y);
+            Mouse.OverrideCursor = null;
+        }
+    }
+    
+    private void RegisterSliderParts()
+    {
+        ZoomSlider.ApplyTemplate();
+
+        if (ZoomSlider.Template.FindName("PART_Track", ZoomSlider) is Track track)
+        {
+            track.DecreaseRepeatButton.ApplyTemplate();
+            track.IncreaseRepeatButton.ApplyTemplate();
+            track.Thumb.ApplyTemplate();
+
+            _slider2 = track.DecreaseRepeatButton as RepeatButton;
+            _slider3 = track.IncreaseRepeatButton as RepeatButton;
+
+            if (track.Thumb.Template.FindName("PART_ThumbBorder", track.Thumb) is Border thumbBorder)
+            {
+                _slider1 = thumbBorder;
+            }
+        }
     }
 
 
-   
 
 
 
@@ -421,25 +260,16 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
 
 
 
-    [LibraryImport("gdi32.dll", SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static partial bool BitBlt(
-        IntPtr hdcDest,
-        int nXDest,
-        int nYDest,
-        int nWidth,
-        int nHeight,
-        IntPtr hdcSrc,
-        int nXSrc,
-        int nYSrc,
-        int dwRop);
 
-    [LibraryImport("gdi32.dll", SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static partial bool DeleteObject(IntPtr hObject);
 
+
+
+
+
+
+
+    // capture
     private const int SRCCOPY = 0x00CC0020;
-
 
     private static BitmapSource CaptureRegion(int x, int y, int width, int height)
     {
@@ -447,18 +277,18 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         using (var g = System.Drawing.Graphics.FromImage(bmp))
         {
             IntPtr hdcDest = g.GetHdc();
-            IntPtr hdcSrc = GetDC(IntPtr.Zero);
+            IntPtr hdcSrc = Win32Api.GetDC(IntPtr.Zero);
 
             try
             {
                 int srcX = x - (width / 2);
                 int srcY = y - (height / 2);
 
-                BitBlt(hdcDest, 0, 0, width, height, hdcSrc, srcX, srcY, SRCCOPY);
+                Win32Api.BitBlt(hdcDest, 0, 0, width, height, hdcSrc, srcX, srcY, SRCCOPY);
             }
             finally
             {
-                _ = ReleaseDC(IntPtr.Zero, hdcSrc);
+                _ = Win32Api.ReleaseDC(IntPtr.Zero, hdcSrc);
                 g.ReleaseHdc(hdcDest);
             }
         }
@@ -476,7 +306,7 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         }
         finally
         {
-            DeleteObject(hBitmap);
+            Win32Api.DeleteObject(hBitmap);
         }
     }
 
@@ -495,7 +325,21 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
 
 
 
+    private static string CurrentTextContent { get; set; } = "#FFFFFF";
 
+    private ColorTypes _colorType;
+    public ColorTypes CurrentColorType // HEX, RGB...
+    {
+        get => _colorType;
+        set
+        {
+            if (_colorType != value)
+            {
+                _colorType = value;
+                OnPropertyChanged(nameof(CurrentColorType));
+            }
+        }
+    }
 
 
     private void UpdateColors(POINT p)
@@ -534,13 +378,13 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static uint GetColorAtPos(POINT p)
     {
-        IntPtr hdc = GetDC(IntPtr.Zero);
-        uint colorRef = GetPixel(hdc, p.X, p.Y);
-        _ = ReleaseDC(IntPtr.Zero, hdc);
+        IntPtr hdc = Win32Api.GetDC(IntPtr.Zero);
+        uint colorRef = Win32Api.GetPixel(hdc, p.X, p.Y);
+        _ = Win32Api.ReleaseDC(IntPtr.Zero, hdc);
 
         return colorRef;
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static bool IsSameColor(SolidColorBrush brush, byte r, byte g, byte b)
     {
@@ -575,7 +419,7 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
             case ColorTypes.CMYK:
                 content = CMYK(r, g, b); type = "CMYK"; break;
             default:
-                DB.Print("Unknown color type");
+                Console.WriteLine("Unknown color type");
                 content = "";
                 type = "";
                 break;
@@ -603,7 +447,7 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         IsEnabledIcon.Foreground = brush;
 
         // Message
-        if (_isMessageOpen)
+        if (MessageService.IsMessageOpen)
             Message.Foreground = brush;
 
         // Crosshair
@@ -620,15 +464,15 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
     }
 
     private void UpdateMessageColor(SolidColorBrush brush)
-    {   
-        if (_isMessageOpen)
+    {
+        if (MessageService.IsMessageOpen)
             Message.Foreground = brush;
     }
 
     private void UpdateZoomView(POINT p, int zoom)
-    {   
+    {
         var invZoom = Math.Clamp(100 - zoom, 1, 100);
-        ZoomImage.Source = CaptureRegion(p.X, p.Y, invZoom, invZoom);
+        ZoomView.Source = CaptureRegion(p.X, p.Y, invZoom, invZoom);
     }
 
     private string HEX(byte r, byte g, byte b)
@@ -659,22 +503,7 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         return $"{c * 100:F0}%,{m * 100:F0}%,{y * 100:F0}%,{k * 100:F0}%";
     }
 
-    public async Task CopyColorToClipboard()
-    {
-        if (string.IsNullOrEmpty(CurrentTextContent)) return;
 
-        try
-        {
-            Clipboard.SetText(CurrentTextContent);
-        }
-        catch
-        {
-            await ShowMessageAsync("Error!", 2000);
-            return;
-        }
-
-        await ShowMessageAsync("Copied!", 3000);
-    }
 
     private static (double H, double S, double L) ConvertToHSL(byte r, byte g, byte b)
     {
@@ -754,7 +583,7 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
     }
 
     public string GetColorType()
-    { 
+    {
         return CurrentColorType.ToString();
     }
 }
