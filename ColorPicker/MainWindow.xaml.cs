@@ -1,7 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Interop;
 using ColorPicker.Services;
-using ColorPicker.Settings;
 
 namespace ColorPicker;
 
@@ -26,10 +25,10 @@ public partial class MainWindow : Window
     private void OnSourceInitialized(object? sender, EventArgs e)
     {
         // Prevent maximize from doubleclick on titlebar
-        var hwndSource = (HwndSource)PresentationSource.FromVisual(this); 
+        var hwndSource = (HwndSource)PresentationSource.FromVisual(this);
         hwndSource.AddHook(PreventMaximize);
 
-        GlobalHotkeyManager.Register(this);
+        GlobalKeybindManager.Register(this);
     }
 
     private void OnWindowStateChanged(object? sender, EventArgs e)
@@ -43,13 +42,13 @@ public partial class MainWindow : Window
     }
 
     private void OnWindowClose(object? sender, System.ComponentModel.CancelEventArgs e)
-    {   
+    {
         State.Save();
-        GlobalHotkeyManager.UnRegister(this);
+        GlobalKeybindManager.UnRegister(this);
     }
 
     private void SetWindowPosition()
-    {   
+    {
         if (!State.SetWindowPosOnStartup || State.IsFirstBoot)
         {
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
@@ -61,7 +60,7 @@ public partial class MainWindow : Window
     }
 
     private void IsFirstBootWindow()
-    {   
+    {
         if (!State.IsFirstBoot) return;
 
         MessageBox.Show( // todo
@@ -77,7 +76,6 @@ public partial class MainWindow : Window
 
     private IntPtr PreventMaximize(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
     {
-        // todo spams
         handled = (msg == 0x00A3);
         return IntPtr.Zero;
     }

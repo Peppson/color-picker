@@ -1,10 +1,9 @@
-using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 
 namespace ColorPicker.Services;
 
-public static partial class GlobalHotkeyManager
+public static partial class GlobalKeybindManager
 {
     private const int HOTKEY_ID = 9000;
     private static HwndSource? _source;

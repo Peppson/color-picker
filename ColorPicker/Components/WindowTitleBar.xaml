@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Background="{DynamicResource TitleBarBackground}">
+    <Grid Background="{StaticResource TitleBarBackground}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
@@ -30,7 +30,7 @@
             Margin="4,0,0,0"
             VerticalAlignment="Center"
             FontSize="13"
-            Foreground="{DynamicResource PrimaryText}"
+            Foreground="{StaticResource PrimaryText}"
             Text="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Title}" />
 
         <!--  Debug  -->
@@ -68,7 +68,7 @@
                 Width="12"
                 Height="12"
                 VerticalAlignment="Center"
-                Foreground="{DynamicResource PrimaryText}"
+                Foreground="{StaticResource PrimaryText}"
                 Icon="ThumbTack" />
         </Button>
 

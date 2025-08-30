@@ -6,7 +6,6 @@ namespace ColorPicker.Services;
 
 public static class State
 {
-    // States
     public static bool IsFirstBoot { get; set; }
     public static bool IsEnabled { get; set; }
     public static bool GlobalKeybind { get; set; } // todo save
@@ -15,20 +14,22 @@ public static class State
     public static double WindowLeft { get; set; }
     public static bool CaptureOnSelf { get; set; }
     public static ColorTypes CurrentColorType { get; set; }
-    public static bool IsAlwaysOnTop { get; set; } = AppConfig.InitialIsAlwaysOnTop;
-    public static bool IsMinimized { get; set; } = AppConfig.InitialIsMinimized;
+    public static bool IsAlwaysOnTop { get; set; } = Config.InitialIsAlwaysOnTop;
+    public static bool IsMinimized { get; set; } = Config.InitialIsMinimized;
 
-    // Refs
     public static Window MainWindow { get; private set; } = null!;
     public static System.Drawing.Rectangle MainWindowPos { get; private set; }
     
     private static bool _isResetting = false;
 
-    // Methods
+
     public static void Init(Window window)
     {
         MainWindow = window;
         LoadFromMemory();
+
+        if (Config.IsEnabledOverride != null)
+            IsEnabled = Config.IsEnabledOverride.Value;
 
         #if !RELEASE
             StartupLogDebug();
@@ -97,7 +98,7 @@ public static class State
 
     private static void StartupLogDebug()
     {
-        Console.WriteLine($"\n--- DEBUG v{AppConfig.VersionNumber} ---");
+        Console.WriteLine($"\n--- {Config.VersionNumber} ---");
         Console.WriteLine($"- IsFirstBoot: {IsFirstBoot}");
         Console.WriteLine($"- WindowTop: {WindowTop}");
         Console.WriteLine($"- WindowLeft: {WindowLeft}");

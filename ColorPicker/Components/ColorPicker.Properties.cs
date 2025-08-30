@@ -17,7 +17,7 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
     }
 
     // Props
-    private int _zoomLevel = AppConfig.InitialZoomLevel;
+    private int _zoomLevel = Config.InitialZoomLevel;
     public int ZoomLevel
     {
         get => _zoomLevel;
@@ -33,20 +33,32 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         }
     }
 
-    public int ZoomPercent =>
-        (_zoomLevel - (int)AppConfig.MinZoomLevel) * 100
-        / ((int)AppConfig.MaxZoomLevel - (int)AppConfig.MinZoomLevel); // Ugly af
+    private ColorTypes _colorType;
+    public ColorTypes CurrentColorType // HEX, RGB...
+    {
+        get => _colorType;
+        set
+        {
+            if (_colorType != value)
+            {
+                _colorType = value;
+                OnPropertyChanged(nameof(CurrentColorType));
+            }
+        }
+    }
 
+    public int ZoomPercent =>
+        (_zoomLevel - (int)Config.MinZoomLevel) * 100 / ((int)Config.MaxZoomLevel - (int)Config.MinZoomLevel); // Ugly af
+    public Border? Slider_1 { get; set; }
+    public RepeatButton? Slider_2 { get; set; }
+    public RepeatButton? Slider_3 { get; set; }
 
     // Fields
     private bool _isDragging = false;
     private POINT _dragStartMouse;
     private POINT _dragStartPos;
-    private DateTime _lastUpdate = DateTime.UtcNow;
     private POINT _lastMousePos;
+    private DateTime _lastUpdate = DateTime.UtcNow;
     private SolidColorBrush _currentBrush = new(Colors.White);
     private SolidColorBrush _invertedBrush = new(Colors.Black);
-    private Border? _slider1;
-    private RepeatButton? _slider2;
-    private RepeatButton? _slider3;
 }

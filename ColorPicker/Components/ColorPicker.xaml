@@ -60,8 +60,8 @@
                     Focusable="False"
                     IsSnapToTickEnabled="True"
                     IsTabStop="False"
-                    Maximum="{x:Static settings:AppConfig.MaxZoomLevel}"
-                    Minimum="{x:Static settings:AppConfig.MinZoomLevel}"
+                    Maximum="{x:Static settings:Config.MaxZoomLevel}"
+                    Minimum="{x:Static settings:Config.MinZoomLevel}"
                     Style="{StaticResource ZoomSliderStyle}"
                     TickFrequency="2"
                     Value="{Binding ZoomLevel, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}">
@@ -79,13 +79,13 @@
                         Width="2"
                         Height="90"
                         HorizontalAlignment="Center"
-                        Fill="{DynamicResource WindowBorder}" />
+                        Fill="{StaticResource WindowBorder}" />
                     <Rectangle
                         x:Name="CrosshairHorizontal"
                         Width="90"
                         Height="2"
                         VerticalAlignment="Center"
-                        Fill="{DynamicResource WindowBorder}" />
+                        Fill="{StaticResource WindowBorder}" />
                 </Grid>
             </Grid>
 
@@ -93,7 +93,7 @@
             <Rectangle
                 Grid.Column="1"
                 Width="2"
-                Fill="{DynamicResource WindowBorder}" />
+                Fill="{StaticResource WindowBorder}" />
 
             <!--  Color View  -->
             <Grid

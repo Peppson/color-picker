@@ -44,10 +44,9 @@ dotnet run -c Release
 ```
 
 ### Considerations
-- Should it capture its own window colors? _(currently off)_
 - Auto-copy last capture to clipboard?
-- Option to change global hotkey? _(windows hook)_
-- Keep sampling active with no mouse movement? To capture say a video
+- Keep sampling active with no mouse movement, to capture say a video?
+- WPF is hard-capped at 60 FPS, such a shame...
 
 <br>
 
