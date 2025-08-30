@@ -112,7 +112,7 @@
                                     IsHitTestVisible="False" />
                             </Track.IncreaseRepeatButton>
                             <Track.Thumb>
-                                <Thumb Width="22" Height="11">
+                                <Thumb Width="11" Height="19">
                                     <Thumb.Template>
                                         <ControlTemplate TargetType="Thumb">
                                             <Border

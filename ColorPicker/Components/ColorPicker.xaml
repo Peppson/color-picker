@@ -7,6 +7,7 @@
     xmlns:local="clr-namespace:ColorPicker.Components"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="clr-namespace:ColorPicker.Models"
+    xmlns:settings="clr-namespace:ColorPicker.Settings"
     mc:Ignorable="d">
 
     <Grid
@@ -59,8 +60,8 @@
                     Focusable="False"
                     IsSnapToTickEnabled="True"
                     IsTabStop="False"
-                    Maximum="91"
-                    Minimum="11"
+                    Maximum="{x:Static settings:AppConfig.MaxZoomLevel}"
+                    Minimum="{x:Static settings:AppConfig.MinZoomLevel}"
                     Style="{StaticResource ZoomSliderStyle}"
                     TickFrequency="2"
                     Value="{Binding ZoomLevel, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}">
@@ -260,7 +261,7 @@
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
                     Cursor="Hand"
-                    MouseLeftButtonUp="ToggleRunning_Click">
+                    MouseLeftButtonUp="ToggleEnabled_Click">
                     <Grid.ToolTip>
                         <TextBlock>
                             Pause/resume<LineBreak />
@@ -270,7 +271,7 @@
 
                     <Border Width="18" Height="18">
                         <fa:ImageAwesome
-                            x:Name="IsRunningIcon"
+                            x:Name="IsEnabledIcon"
                             Width="18"
                             Height="18"
                             VerticalAlignment="Center"

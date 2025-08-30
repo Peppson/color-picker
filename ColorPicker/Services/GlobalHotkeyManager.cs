@@ -17,8 +17,6 @@ public static partial class GlobalHotkeyManager
     private const int HOTKEY_ID = 9000;
     private static HwndSource? _source;
     
-    
-
     public static void Register(Window window, uint modifiers = 0x0002, uint key = 0x20) // todo get dynamic
     {
         var helper = new WindowInteropHelper(window);

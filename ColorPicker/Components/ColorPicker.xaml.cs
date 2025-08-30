@@ -50,9 +50,8 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
-    private bool _isEnabled = true;
+
     private bool _isMessageOpen = false;
-    private bool _isDropdownMenuOpen = false;
     private DateTime _lastUpdate = DateTime.UtcNow;
     private POINT _lastMousePos;
     private SolidColorBrush _currentBrush = new(Colors.White);
@@ -62,7 +61,7 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
     private static string CurrentTextContent { get; set; } = "#FFFFFF";
 
     
-    private ColorTypes _colorType = ColorTypes.HEX;
+    private ColorTypes _colorType;
     public ColorTypes CurrentColorType // HEX, RGB...
     {
         get => _colorType;
@@ -77,7 +76,7 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
     }
 
     
-    private int _zoomLevel = 27; 
+    private int _zoomLevel = AppConfig.InitialZoomLevel;
     public int ZoomLevel
     {
         get => _zoomLevel;
@@ -93,22 +92,11 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         }
     }
 
-
-    public int ZoomPercent => (_zoomLevel - 11) * 100 / (91 - 11);
-
-
-    /* private System.Drawing.Rectangle _appWindowPos;
-    public void UpdateAppWindowPos(Window window)
-    {
-        _appWindowPos = new System.Drawing.Rectangle(
-            (int)window.Left,
-            (int)window.Top,
-            (int)window.Width,
-            (int)window.Height
-        );
-    } */
-
     
+    public int ZoomPercent => 
+        (_zoomLevel - (int)AppConfig.MinZoomLevel) * 100
+        / ((int)AppConfig.MaxZoomLevel - (int)AppConfig.MinZoomLevel); // Ugly af
+
 
     private CancellationTokenSource? _messageCts;
 
@@ -200,7 +188,7 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
 
 
 
-    
+
 
     public ColorPicker()
     {
@@ -215,11 +203,6 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         ZoomImage.MouseDown += ZoomImage_MouseDown;
         ZoomImage.MouseMove += ZoomImage_MouseMove;
         ZoomImage.MouseUp += ZoomImage_MouseUp;
-
-        DropdownButton.ContextMenu.Closed += (s, e) =>
-        {
-            _isDropdownMenuOpen = false;
-        };
     }
 
     private void OnNewFrame(object sender, EventArgs e)
@@ -227,7 +210,7 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         // Clamp to max 120fps color updates
         const int minInterval = 1000 / 120;
 
-        if (!_isEnabled || Appstate.IsMinimize)
+        if (!Appstate.IsEnabled || Appstate.IsMinimized)
             return;
 
         if (DateTime.UtcNow < _lastUpdate.AddMilliseconds(minInterval))
@@ -236,14 +219,6 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
 
         if (!GetCursorPos(out POINT p))
             return;
-
-
-
-
-       
-
-        
-
 
         if (Appstate.MainWindowPos.Contains(p.X, p.Y))
             return;
@@ -260,16 +235,12 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         Window window = Window.GetWindow(this)!;
         window.PreviewKeyDown += Keyboard_Click;
 
-        CurrentColorType = Properties.Settings.Default.ColorType switch // todo colorclass?
-        {
-            "RGB" => ColorTypes.RGB,
-            "HEX" => ColorTypes.HEX,
-            "HSL" => ColorTypes.HSL,
-            "HSV" => ColorTypes.HSV,
-            "CMYK" => ColorTypes.CMYK,
-            _ => ColorTypes.HEX,
-        };
+        CurrentColorType = ColorService.ConvertStringToColorType(Properties.Settings.Default.ColorType); // todo
 
+        if (AppConfig.IsEnabledOverride != null)
+            Appstate.IsEnabled = AppConfig.IsEnabledOverride.Value;
+
+        SetIsEnabledIcon(Appstate.IsEnabled);    
         RegisterSliderParts();
         UpdateColorsStatic(); 
         DB.Print($"Loaded color type: {CurrentColorType}");
@@ -288,7 +259,6 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         DropdownButton.ContextMenu.HorizontalOffset = 0;
         DropdownButton.ContextMenu.VerticalOffset = 0;
         DropdownButton.ContextMenu.IsOpen = true;
-        _isDropdownMenuOpen = true;
     }
 
     private void DropdownMouse_Click(object sender, MouseButtonEventArgs e)
@@ -300,7 +270,6 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         DropdownButton.ContextMenu.HorizontalOffset = mousePos.X;
         DropdownButton.ContextMenu.VerticalOffset = mousePos.Y;
         DropdownButton.ContextMenu.IsOpen = true;
-        _isDropdownMenuOpen = true;
     }
 
     private void DropdownMenuItem_Click(object sender, RoutedEventArgs e)
@@ -321,7 +290,7 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         e.Handled = true;
     }
 
-    private void ToggleRunning_Click(object sender, MouseButtonEventArgs e)
+    private void ToggleEnabled_Click(object sender, MouseButtonEventArgs e)
     {
         ToggleSampling();
         e.Handled = true;
@@ -363,32 +332,53 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         const int step = 2;
 
         if (e.Delta > 0)
-            ZoomLevel = Math.Min(ZoomLevel + step, 91);
+            ZoomLevel = Math.Min(ZoomLevel + step, (int)AppConfig.MaxZoomLevel);
         else
-            ZoomLevel = Math.Max(ZoomLevel - step, 11);
+            ZoomLevel = Math.Max(ZoomLevel - step, (int)AppConfig.MinZoomLevel);
 
         e.Handled = true;
     }
 
     public void ToggleSampling()
     {
-        _isEnabled = !_isEnabled;
-        SetIsRunningIcon(_isEnabled);
-        DB.Print($"Color sampling: {_isEnabled}");
+        Appstate.IsEnabled = !Appstate.IsEnabled;
+        SetIsEnabledIcon(Appstate.IsEnabled);
+        DB.Print($"Color sampling: {Appstate.IsEnabled}");
     }
 
     public void SetSampling(bool enabled)
     {
-        _isEnabled = enabled;
-        SetIsRunningIcon(_isEnabled);
-        DB.Print($"Color sampling: {_isEnabled}");
+        Appstate.IsEnabled = enabled;
+        SetIsEnabledIcon(Appstate.IsEnabled);
+        DB.Print($"Color sampling: {Appstate.IsEnabled}");
     }
 
-
-    private void SetIsRunningIcon(bool running)
+    private void SetIsEnabledIcon(bool running)
     {
-        IsRunningIcon.Icon = running ? FontAwesomeIcon.Pause : FontAwesomeIcon.Play;
+        IsEnabledIcon.Icon = running ? FontAwesomeIcon.Pause : FontAwesomeIcon.Play;
     }
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public async Task ShowMessageAsync(string message, int durationMs)
     {
@@ -416,10 +406,6 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
 
         _isMessageOpen = false;
     }
-
-
-
-
 
 
    
@@ -503,8 +489,17 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
 
 
 
+
+
+
+
+
+
+
+
+
     private void UpdateColors(POINT p)
-    {   
+    {
         uint colorRef = GetColorAtPos(p);
 
         byte r = (byte)(colorRef & 0x000000FF);
@@ -605,7 +600,7 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         // Icons
         DropdownButtonIcon.Foreground = brush;
         CopyButtonIcon.Foreground = brush;
-        IsRunningIcon.Foreground = brush;
+        IsEnabledIcon.Foreground = brush;
 
         // Message
         if (_isMessageOpen)

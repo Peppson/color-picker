@@ -32,7 +32,7 @@ public partial class MainWindow : Window
 
     private void OnWindowStateChanged(object? sender, EventArgs e)
     {
-        Appstate.IsMinimize = (WindowState == WindowState.Minimized);
+        Appstate.IsMinimized = (WindowState == WindowState.Minimized);
     }
 
     private void OnWindowSizeOrLocationChanged(object? sender, EventArgs e)
@@ -43,7 +43,7 @@ public partial class MainWindow : Window
     private void OnWindowClose(object? sender, System.ComponentModel.CancelEventArgs e)
     {   
         Appstate.Save(this.Top, this.Left);
-        GlobalHotkeyManager.UnRegister(this); 
+        GlobalHotkeyManager.UnRegister(this);
     }
 
     private void SetWindowPosition()
@@ -58,10 +58,9 @@ public partial class MainWindow : Window
         this.Left = Appstate.WindowLeft;
     }
 
-    int test = 0;
     private IntPtr PreventMaximize(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
     {
-        //Console.WriteLine(test++); todo spams
+        // todo spams
         handled = (msg == 0x00A3);
         return IntPtr.Zero;
     }

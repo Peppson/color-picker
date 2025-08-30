@@ -1,22 +1,30 @@
 using System.Globalization;
 using System.Reflection;
 using System.Windows.Data;
+using ColorPicker.Models;
 
 namespace ColorPicker.Settings;
 
 public static class AppConfig
 {
-    // Defaults
-    public const bool SetWindowPosOnStartup = true;
-    public const bool CaptureColorOnSelf = false;
-    public const bool BootWithCaptureEnabled = false;
-    
-    
-
-
-
     public static readonly string VersionNumber = Assembly.GetExecutingAssembly().GetName().Version!.ToString(3) ??
         throw new InvalidOperationException("Failed to get version number");
+    public const int InitialZoomLevel = 27;
+    public const double MinZoomLevel = 11; // Uneven needed for px centering
+    public const double MaxZoomLevel = 91;
+    public const bool InitialIsAlwaysOnTop = true;
+    public const bool InitialIsMinimized = false;
+    
+
+    // Overrides
+    public static readonly bool? IsEnabledOverride = false; // todo
+    
+    
+    
+
+
+
+    
 
 
     
