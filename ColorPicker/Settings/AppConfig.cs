@@ -5,7 +5,7 @@ namespace ColorPicker.Settings;
 public static class AppConfig
 {    
     // Overrides
-    public static readonly bool? IsEnabledOverride = null;
+    public static readonly bool? IsEnabledOverride = true;
 
     // Constants
     public const int InitialZoomLevel = 27;

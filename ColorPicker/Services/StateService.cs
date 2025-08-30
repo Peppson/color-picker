@@ -46,6 +46,9 @@ public static class State
         CurrentColorType = ColorService.StringToColorType(Properties.Settings.Default.ColorType);
         CaptureOnSelf = Properties.Settings.Default.CaptureColorOnSelf;
         SetWindowPosOnStartup = Properties.Settings.Default.SetWindowPosOnStartup;
+
+
+        //CaptureOnSelf = true;
     }
 
     public static void Save()

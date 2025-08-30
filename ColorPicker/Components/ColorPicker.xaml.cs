@@ -1,14 +1,10 @@
 ﻿using System.ComponentModel;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using System.Windows.Interop;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using ColorPicker.Models;
 using ColorPicker.Services;
 using ColorPicker.Settings;
@@ -48,7 +44,7 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         if (!Win32Api.GetCursorPos(out POINT p))
             return;
 
-        if (State.MainWindowPos.Contains(p.X, p.Y))
+        if (!State.CaptureOnSelf && State.MainWindowPos.Contains(p.X, p.Y))
             return;
 
         if (_lastMousePos.X == p.X && _lastMousePos.Y == p.Y)
@@ -268,63 +264,6 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
 
 
 
-    // capture
-    private const int SRCCOPY = 0x00CC0020;
-
-    private static BitmapSource CaptureRegion(int x, int y, int width, int height)
-    {
-        using var bmp = new System.Drawing.Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-        using (var g = System.Drawing.Graphics.FromImage(bmp))
-        {
-            IntPtr hdcDest = g.GetHdc();
-            IntPtr hdcSrc = Win32Api.GetDC(IntPtr.Zero);
-
-            try
-            {
-                int srcX = x - (width / 2);
-                int srcY = y - (height / 2);
-
-                Win32Api.BitBlt(hdcDest, 0, 0, width, height, hdcSrc, srcX, srcY, SRCCOPY);
-            }
-            finally
-            {
-                _ = Win32Api.ReleaseDC(IntPtr.Zero, hdcSrc);
-                g.ReleaseHdc(hdcDest);
-            }
-        }
-
-        IntPtr hBitmap = bmp.GetHbitmap();
-        try
-        {
-            var source = Imaging.CreateBitmapSourceFromHBitmap(
-                hBitmap,
-                IntPtr.Zero,
-                Int32Rect.Empty,
-                BitmapSizeOptions.FromEmptyOptions());
-            source.Freeze();
-            return source;
-        }
-        finally
-        {
-            Win32Api.DeleteObject(hBitmap);
-        }
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     private static string CurrentTextContent { get; set; } = "#FFFFFF";
 
     private ColorTypes _colorType;
@@ -472,7 +411,7 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
     private void UpdateZoomView(POINT p, int zoom)
     {
         var invZoom = Math.Clamp(100 - zoom, 1, 100);
-        ZoomView.Source = CaptureRegion(p.X, p.Y, invZoom, invZoom);
+        ZoomView.Source = ScreenCaptureService.GetRegion(p.X, p.Y, invZoom, invZoom);
     }
 
     private string HEX(byte r, byte g, byte b)
