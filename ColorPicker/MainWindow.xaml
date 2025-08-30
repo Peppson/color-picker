@@ -35,6 +35,15 @@
 
             <!--  App  -->
             <components:ColorPicker x:Name="ColorPicker" Grid.Row="1" />
+
+            <!--  Settings  -->
+            <Border
+                x:Name="SettingsWindow"
+                Grid.Row="1"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Background="Green" />
+
         </Grid>
     </Border>
 </Window>

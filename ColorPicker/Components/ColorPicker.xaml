@@ -68,7 +68,7 @@
                     <Slider.ToolTip>
                         <TextBlock>
                             Zoom<LineBreak />
-                            ● Drag to zoom</TextBlock>
+                            ● Mouse scrollwheel</TextBlock>
                     </Slider.ToolTip>
                 </Slider>
 
@@ -77,12 +77,12 @@
                     <Rectangle
                         x:Name="CrosshairVertical"
                         Width="2"
-                        Height="90"
+                        Height="80"
                         HorizontalAlignment="Center"
                         Fill="{StaticResource WindowBorder}" />
                     <Rectangle
                         x:Name="CrosshairHorizontal"
-                        Width="90"
+                        Width="80"
                         Height="2"
                         VerticalAlignment="Center"
                         Fill="{StaticResource WindowBorder}" />
@@ -131,7 +131,7 @@
                         MouseLeftButtonUp="DropdownButton_Click">
                         <Border.ToolTip>
                             <TextBlock>
-                                Color menu<LineBreak />
+                                Color codes<LineBreak />
                                 ● Right-click to open at mouse</TextBlock>
                         </Border.ToolTip>
                         <fa:ImageAwesome
@@ -139,7 +139,7 @@
                             Width="16"
                             Height="16"
                             Foreground="Black"
-                            Icon="Sliders" />
+                            Icon="ListUl" />
 
                         <Border.ContextMenu>
                             <ContextMenu x:Name="ColorTypeMenu" Style="{StaticResource ContextMenuStyle}">
@@ -202,7 +202,7 @@
                         MouseLeftButtonUp="CopyButton_Click">
                         <Border.ToolTip>
                             <TextBlock>
-                                Copy color to clipboard<LineBreak />
+                                Copy to clipboard<LineBreak />
                                 ● Ctrl+C to copy</TextBlock>
                         </Border.ToolTip>
                         <fa:ImageAwesome
@@ -265,8 +265,8 @@
                     <Grid.ToolTip>
                         <TextBlock>
                             Pause/resume<LineBreak />
-                            ● Left-click anywhere<LineBreak />
-                            ● Ctrl+Spacebar</TextBlock>
+                            ● Spacebar<LineBreak />
+                            ● Custom keybind</TextBlock>
                     </Grid.ToolTip>
 
                     <Border Width="18" Height="18">

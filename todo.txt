@@ -3,9 +3,6 @@ dotnet publish -c Release -r win-x64 --self-contained true -o "$HOME/Desktop"
 
 
 
-settings.settings broken
-
-
 refactor
 lazy load settings component
 welcomepage

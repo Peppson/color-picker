@@ -5,7 +5,8 @@ namespace ColorPicker.Settings;
 public static class Config
 {    
     // Overrides
-    public static readonly bool? IsEnabledOverride = true; // todo
+    public static readonly bool? IsEnabledOverride = false; // todo
+    public const bool ShowDebugbutton = false;
 
     // Constants
     public const int MaxSamplesPerSecond = 120;

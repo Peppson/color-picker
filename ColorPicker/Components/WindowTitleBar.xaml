@@ -8,8 +8,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Background="{StaticResource TitleBarBackground}">
+    <Grid Background="{StaticResource TitleBarBackground}" SnapsToDevicePixels="True">
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
@@ -33,7 +34,7 @@
             Foreground="{StaticResource PrimaryText}"
             Text="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Title}" />
 
-        <!--  Debug  -->
+
         <Button
             x:Name="DebugButton"
             Grid.Column="2"
@@ -52,9 +53,32 @@
                 Icon="Bug" />
         </Button>
 
+
+        <Button
+            x:Name="SettingsButton"
+            Grid.Column="3"
+            Width="46"
+            Height="32"
+            Click="SettingsButton_Click"
+            RenderOptions.EdgeMode="Aliased"
+            Style="{StaticResource TitleBarButtonStyle}">
+            <Button.ToolTip>
+                Open settings
+            </Button.ToolTip>
+            <fa:ImageAwesome
+                x:Name="SettingsButtonIcon"
+                Width="12"
+                Height="12"
+                VerticalAlignment="Center"
+                Foreground="{StaticResource PrimaryText}"
+                Icon="sliders" />
+        </Button>
+
+
+
         <Button
             x:Name="OnTopButton"
-            Grid.Column="3"
+            Grid.Column="4"
             Width="46"
             Height="32"
             Click="OnTopButton_Click"
@@ -72,8 +96,10 @@
                 Icon="ThumbTack" />
         </Button>
 
+
+
         <Button
-            Grid.Column="4"
+            Grid.Column="5"
             Click="OnMinimizeButton_Click"
             RenderOptions.EdgeMode="Aliased"
             Style="{StaticResource TitleBarButtonStyle}">
@@ -82,20 +108,26 @@
                 Height="32"
                 Margin="0,0,0,0"
                 Data="M 18,15 H 28"
-                Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                Stroke="{StaticResource PrimaryText}"
                 StrokeThickness="1" />
+            <Button.ToolTip>
+                Minimize
+            </Button.ToolTip>
         </Button>
 
         <Button
-            Grid.Column="5"
+            Grid.Column="6"
             Click="OnCloseButton_Click"
             Style="{StaticResource TitleBarCloseButtonStyle}">
             <Path
                 Width="46"
                 Height="32"
                 Data="M 18,11 27,20 M 18,20 27,11"
-                Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                Stroke="{StaticResource PrimaryText}"
                 StrokeThickness="1" />
+            <Button.ToolTip>
+                Close
+            </Button.ToolTip>
         </Button>
     </Grid>
 </UserControl>

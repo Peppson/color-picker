@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using ColorPicker.Models;
+using ColorPicker.Services;
 using ColorPicker.Settings;
 
 namespace ColorPicker.Components;
@@ -42,6 +43,7 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
             if (_colorType != value)
             {
                 _colorType = value;
+                State.CurrentColorType = value;
                 OnPropertyChanged(nameof(CurrentColorType));
             }
         }

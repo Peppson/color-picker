@@ -12,7 +12,7 @@ using FontAwesome.WPF;
 namespace ColorPicker.Components;
 
 public partial class ColorPicker : UserControl, INotifyPropertyChanged
-{    
+{
     public ColorPicker()
     {
         InitializeComponent();
@@ -20,13 +20,7 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         ColorService.Init(this);
 
         Loaded += OnLoaded;
-        Unloaded += OnUnloaded;
-        CompositionTarget.Rendering += OnNewFrame!;
-
-        ZoomView.MouseWheel += ZoomView_MouseWheel;
-        ZoomView.MouseDown += ZoomView_MouseDown;
-        ZoomView.MouseMove += ZoomView_MouseMove;
-        ZoomView.MouseUp += ZoomView_MouseUp;
+        Unloaded += OnUnloaded;        
     }
 
     private void OnNewFrame(object sender, EventArgs e)
@@ -34,8 +28,7 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         // Clamp max fps, WPF framerates is wonky sometimes...
         const int minInterval = 1000 / Config.MaxSamplesPerSecond;
 
-        if (!State.IsEnabled || State.IsMinimized)
-            return;
+        if (!State.IsEnabled || State.IsMinimized) return;
 
         if (DateTime.UtcNow < _lastUpdate.AddMilliseconds(minInterval))
             return;
@@ -56,11 +49,8 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
 
     private void OnLoaded(object? sender, RoutedEventArgs e)
     {
-        State.MainWindow.PreviewKeyDown += Keyboard_Click;
-
-        CurrentColorType = ColorService.StringToColorType(
-            Properties.Settings.Default.ColorType
-        );
+        CurrentColorType = State.CurrentColorType;
+        EnableInput();
 
         RegisterSliderParts();
         SetIsEnabledIcon(State.IsEnabled);
@@ -257,6 +247,26 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
     {
         return CurrentColorType.ToString();
     } 
+
+    public void EnableInput()
+    {   
+        State.MainWindow.PreviewKeyDown += Keyboard_Click;
+        ZoomView.MouseWheel += ZoomView_MouseWheel;
+        ZoomView.MouseDown += ZoomView_MouseDown;
+        ZoomView.MouseMove += ZoomView_MouseMove;
+        ZoomView.MouseUp += ZoomView_MouseUp;
+        CompositionTarget.Rendering += OnNewFrame!;
+    }
+
+    public void DisableInput()
+    {
+        State.MainWindow.PreviewKeyDown -= Keyboard_Click;
+        ZoomView.MouseWheel -= ZoomView_MouseWheel;
+        ZoomView.MouseDown -= ZoomView_MouseDown;
+        ZoomView.MouseMove -= ZoomView_MouseMove;
+        ZoomView.MouseUp -= ZoomView_MouseUp;
+        CompositionTarget.Rendering -= OnNewFrame!;
+    }
 
     private void RegisterSliderParts()
     {
