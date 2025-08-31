@@ -36,7 +36,7 @@ public partial class WindowTitleBar : UserControl
         if (State.IsSettingsOpen)
         {
             State.MainWindow.ColorPicker.DisableInput();
-            State.MainWindow.SettingsWindow.Init();
+            State.MainWindow.SettingsWindow.RefreshHotkeyInput();
             State.MainWindow.ColorPicker.Visibility = Visibility.Collapsed;
             State.MainWindow.SettingsWindow.Visibility = Visibility.Visible;
         }

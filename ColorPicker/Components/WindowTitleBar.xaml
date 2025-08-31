@@ -71,7 +71,7 @@
                 Height="12"
                 VerticalAlignment="Center"
                 Foreground="{StaticResource PrimaryText}"
-                Icon="sliders" />
+                Icon="cog" />
         </Button>
 
         <Button

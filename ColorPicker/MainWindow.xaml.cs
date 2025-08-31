@@ -28,7 +28,8 @@ public partial class MainWindow : Window
         var hwndSource = (HwndSource)PresentationSource.FromVisual(this);
         hwndSource.AddHook(PreventMaximize);
 
-        GlobalHotkeyManager.Register(this);
+        if (!GlobalHotkeyManager.Register(this, State.GlobalHotkey!))
+            State.GlobalHotkey = "";
     }
 
     private void OnWindowStateChanged(object? sender, EventArgs e)

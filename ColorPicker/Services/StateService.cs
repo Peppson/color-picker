@@ -49,8 +49,6 @@ public static class State
         SetWindowPosOnStartup = Properties.Settings.Default.SetWindowPosOnStartup;
         CurrentColorType = ColorService.StringToColorType(Properties.Settings.Default.ColorType);
 
-        GlobalHotkey = "";
-
         IsEnabled = BootWithCaptureEnabled;
     }
 

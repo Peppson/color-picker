@@ -20,5 +20,5 @@ public static class Config
     public static readonly string VersionNumber = Assembly.GetExecutingAssembly().GetName().Version!.ToString(3) ??
         throw new InvalidOperationException("Failed to get version number");
         
-    public const string GithubLink = "Https://github.com/Peppson/color-grab";
+    public const string GithubLink = "https://github.com/Peppson/color-grab";
 }

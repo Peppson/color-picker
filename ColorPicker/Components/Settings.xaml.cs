@@ -15,7 +15,7 @@ public partial class Settings : UserControl
         DataContext = new SettingsViewModel();
     }
 
-    public void Init() => KeybindInput.Text = State.GlobalHotkey;
+    public void RefreshHotkeyInput() => KeybindInput.Text = State.GlobalHotkey;
     public void Reset() => ClearFocus();
 
     private void Grid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -31,49 +31,64 @@ public partial class Settings : UserControl
 
     private void KeybindInput_GotFocus(object sender, RoutedEventArgs e)
     {
-        GlobalHotkeyManager.UnRegister(State.MainWindow);
+        if (!string.IsNullOrWhiteSpace(State.GlobalHotkey))
+            GlobalHotkeyManager.UnRegister(State.MainWindow);
     }
 
     private void KeybindInput_LostFocus(object sender, RoutedEventArgs e)
     {
-        GlobalHotkeyManager.Register(State.MainWindow); // todo dynamic
-        Init();
+        if (!string.IsNullOrWhiteSpace(State.GlobalHotkey))
+            _ = GlobalHotkeyManager.Register(State.MainWindow, State.GlobalHotkey);
+
+        RefreshHotkeyInput();
     }
 
     private void KeybindInput_PreviewKeyDown(object sender, KeyEventArgs e)
     {
         var modifierKey = Keyboard.Modifiers;
-        var key = (e.Key == Key.System) ? e.SystemKey : e.Key;        
+        var key = (e.Key == Key.System) ? e.SystemKey : e.Key;
         e.Handled = true;
 
         // Cancel
         if (key == Key.Escape)
         {
             ClearFocus(true);
-            Init();
+            RefreshHotkeyInput();
             return;
         }
 
-        // Ctrl + ...
-        if (GlobalHotkeyManager.IsModifierKey(key))
-        {
-            KeybindInput.Text = $"{GlobalHotkeyManager.GetModifierKey(modifierKey)} + ";
-            return;
-        }
-
-        // Require modifier
+        // Require at least one modifier
         if (modifierKey == ModifierKeys.None)
         {
             KeybindInput.Text = NoModifierText;
             return;
         }
 
-        // Set hotkey
-        var hotkey = GlobalHotkeyManager.BuildHotkeyString(modifierKey, key);
-        State.GlobalHotkey = hotkey;
-        Init();
+        // Ctrl + Alt + ...
+        if (GlobalHotkeyManager.IsModifierKey(key))
+        {
+            KeybindInput.Text = $"{GlobalHotkeyManager.BuildModifiersString(modifierKey)}+";
+            return;
+        }
 
-        //todo Save hotkey 
+        // Same hotkey
+        var hotkey = GlobalHotkeyManager.BuildHotkeyString(modifierKey, key);
+        if (hotkey == State.GlobalHotkey)
+        { 
+            RefreshHotkeyInput();
+            return;
+        }
+        
+        // Set new hotkey
+        if (!GlobalHotkeyManager.Register(State.MainWindow, hotkey))
+        {
+            MessageService.ShowMessageBox("Failed to register hotkey. It might already be in use by another application.");
+            RefreshHotkeyInput();
+            return;
+        }
+        
+        State.GlobalHotkey = hotkey;
+        RefreshHotkeyInput();
     }
 
     private void ClearFocus(bool clearKeyboardFocus = false)
