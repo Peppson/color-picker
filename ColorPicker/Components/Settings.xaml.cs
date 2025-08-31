@@ -7,45 +7,49 @@ namespace ColorPicker.Components;
 
 public partial class Settings : UserControl
 {
-    private const string NoModifierText = "Please use Ctrl, Alt, or Shift + a key";
+    private const string NoModifierText = "Missing modifier";
 
     public Settings()
     {
         InitializeComponent();
-        DataContext = this;
+        DataContext = new SettingsViewModel();
     }
 
-    public void Init() => KeybindInput.Text = State.GlobalKeybind;
-    public void Reset() => ClearFocusFromFields();
+    public void Init() => KeybindInput.Text = State.GlobalHotkey;
+    public void Reset() => ClearFocus();
 
     private void Grid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
     {
-        if (KeybindInput.IsFocused) ClearFocusFromFields();
+        if (KeybindInput.IsFocused) ClearFocus(true);
+    }
+
+    private void BackButton_Click(object sender, RoutedEventArgs e)
+    {
+        // Same as closing settings from titlebar
+        State.MainWindow.TopTitleBar.SettingsButton_Click(sender, e);
     }
 
     private void KeybindInput_GotFocus(object sender, RoutedEventArgs e)
     {
-        Console.WriteLine("Got");
+        GlobalHotkeyManager.UnRegister(State.MainWindow);
     }
 
     private void KeybindInput_LostFocus(object sender, RoutedEventArgs e)
     {
-        Console.WriteLine("Lost");
+        GlobalHotkeyManager.Register(State.MainWindow); // todo dynamic
         Init();
     }
 
-    private void KeybindInput_KeyDown(object sender, KeyEventArgs e)
-    {   
-        Console.WriteLine("KeyDown Settings");
-
-        e.Handled = true;
+    private void KeybindInput_PreviewKeyDown(object sender, KeyEventArgs e)
+    {
         var modifierKey = Keyboard.Modifiers;
-        var key = (e.Key == Key.System) ? e.SystemKey : e.Key;
+        var key = (e.Key == Key.System) ? e.SystemKey : e.Key;        
+        e.Handled = true;
 
         // Cancel
         if (key == Key.Escape)
         {
-            ClearFocusFromFields();
+            ClearFocus(true);
             Init();
             return;
         }
@@ -57,7 +61,7 @@ public partial class Settings : UserControl
             return;
         }
 
-        // Require modifier for global hotkeys
+        // Require modifier
         if (modifierKey == ModifierKeys.None)
         {
             KeybindInput.Text = NoModifierText;
@@ -66,27 +70,15 @@ public partial class Settings : UserControl
 
         // Set hotkey
         var hotkey = GlobalHotkeyManager.BuildHotkeyString(modifierKey, key);
-        KeybindInput.Text = hotkey;
+        State.GlobalHotkey = hotkey;
+        Init();
 
-        State.GlobalKeybind = hotkey;
-        // Save
+        //todo Save hotkey 
     }
 
-    private void ClearFocusFromFields()
+    private void ClearFocus(bool clearKeyboardFocus = false)
     {   
-        Console.WriteLine("UnFocusFields");
         FocusManager.SetFocusedElement(FocusManager.GetFocusScope(KeybindInput), null);
-        Keyboard.ClearFocus();
+        if (clearKeyboardFocus) Keyboard.ClearFocus();
     }
-
-    
-
-
-
-    
-
-
-
-
 }
-

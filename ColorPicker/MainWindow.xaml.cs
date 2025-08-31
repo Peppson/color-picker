@@ -59,11 +59,11 @@ public partial class MainWindow : Window
         this.Left = State.WindowLeft;
     }
 
-    private void IsFirstBootWindow()
+    private void IsFirstBootWindow() // todo
     {
         if (!State.IsFirstBoot) return;
 
-        MessageBox.Show( // todo
+        MessageBox.Show( 
             "Welcome to ColorPicker!\n\n" +
             "To get started, hover over any area of your screen to pick a color.\n\n" +
             "You can change settings by clicking the gear icon in the top-right corner.\n\n" +
@@ -72,6 +72,8 @@ public partial class MainWindow : Window
             MessageBoxButton.OK,
             MessageBoxImage.Information
         );
+
+        State.IsFirstBoot = false;
     }
 
     private IntPtr PreventMaximize(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)

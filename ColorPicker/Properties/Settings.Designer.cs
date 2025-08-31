@@ -106,5 +106,29 @@ namespace ColorPicker.Properties {
                 this["SetWindowPosOnStartup"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string GlobalHotkey {
+            get {
+                return ((string)(this["GlobalHotkey"]));
+            }
+            set {
+                this["GlobalHotkey"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool GlobalHotkeyEnabled {
+            get {
+                return ((bool)(this["GlobalHotkeyEnabled"]));
+            }
+            set {
+                this["GlobalHotkeyEnabled"] = value;
+            }
+        }
     }
 }

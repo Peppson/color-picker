@@ -37,12 +37,12 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         if (!Win32Api.GetCursorPos(out POINT p))
             return;
 
+        if (!State.CaptureOnSelf && State.MainWindowPos.Contains(p.X, p.Y))
+            return;
+
         if (_lastMousePos.X == p.X && _lastMousePos.Y == p.Y)
             return;
         _lastMousePos = p;
-
-        if (!State.CaptureOnSelf && State.MainWindowPos.Contains(p.X, p.Y))
-            return;
 
         UpdateColors(p);
     }
@@ -55,7 +55,6 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         RegisterSliderParts();
         SetIsEnabledIcon(State.IsEnabled);
         UpdateColorsStatic();
-        Console.WriteLine($"Loaded color type: {CurrentColorType}");
     }
 
     private void OnUnloaded(object? sender, RoutedEventArgs e)
@@ -108,9 +107,6 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
 
     private void ColorPicker_Keyboard_Click(object sender, KeyEventArgs e)
     {   
-        Console.WriteLine("KeyDown ColorPicker"); // todo
-
-
         // CTRL + C
         if (e.Key == Key.C && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
         {
@@ -119,6 +115,7 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
             e.Handled = true;
             return;
         }
+
         // Spacebar 
         else if (e.Key == Key.Space)
         {
@@ -126,6 +123,7 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
             e.Handled = true;
             return;
         }
+        
         // Arrow keys
         else if (e.Key == Key.Left)
             _lastMousePos.X--;
@@ -259,7 +257,7 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         ZoomView.MouseWheel += ZoomView_MouseWheel;
         ZoomView.MouseDown += ZoomView_MouseDown;
         ZoomView.MouseMove += ZoomView_MouseMove;
-        ZoomView.MouseUp += ZoomView_MouseUp; // todo new window insterad? 
+        ZoomView.MouseUp += ZoomView_MouseUp;
     }
 
     public void DisableInput()

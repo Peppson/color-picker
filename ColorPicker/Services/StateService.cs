@@ -6,33 +6,33 @@ namespace ColorPicker.Services;
 
 public static class State
 {
+    // Persistent
     public static bool IsFirstBoot { get; set; }
-    public static bool IsEnabled { get; set; }
-    public static string GlobalKeybind { get; set; } = "";
+    public static string? GlobalHotkey { get; set; }
+    public static bool GlobalHotkeyEnabled { get; set; }
     public static bool SetWindowPosOnStartup { get; set; }
+    public static bool BootWithCaptureEnabled { get; set; }
+    public static bool CaptureOnSelf { get; set; }
     public static ColorTypes CurrentColorType { get; set; }
     public static double WindowTop { get; set; }
     public static double WindowLeft { get; set; }
-    public static bool CaptureOnSelf { get; set; }
-    
-    public static bool IsAlwaysOnTop { get; set; } = Config.InitialIsAlwaysOnTop;
+
+    // Runtime
+    public static bool IsEnabled { get; set; }
     public static bool IsMinimized { get; set; } = Config.InitialIsMinimized;
     public static bool IsSettingsOpen { get; set; } = false;
     public static MainWindow MainWindow { get; private set; } = null!;
     public static System.Drawing.Rectangle MainWindowPos { get; private set; }
-    
-    private static bool _isResetting = false;
 
+    private static bool _isResetting = false;
 
     public static void Init(MainWindow window)
     {
         MainWindow = window;
         LoadFromMemory();
 
-        if (Config.IsEnabledOverride != null)
-            IsEnabled = Config.IsEnabledOverride.Value;
-
         #if !RELEASE
+            if (Config.IsEnabledOverride != null) IsEnabled = Config.IsEnabledOverride.Value;
             StartupLogDebug();
         #endif
     }
@@ -40,27 +40,30 @@ public static class State
     public static void LoadFromMemory()
     {
         IsFirstBoot = Properties.Settings.Default.IsFirstBoot;
-
-        //GlobalKeybind = Properties.Settings.Default.GlobalKeybind; todo make
-        GlobalKeybind = "Random keybind";
-
+        GlobalHotkey = Properties.Settings.Default.GlobalHotkey;
+        GlobalHotkeyEnabled = Properties.Settings.Default.GlobalHotkeyEnabled;
         WindowTop = Properties.Settings.Default.WindowTop;
         WindowLeft = Properties.Settings.Default.WindowLeft;
-        IsEnabled = Properties.Settings.Default.BootWithCaptureEnabled;
+        BootWithCaptureEnabled = Properties.Settings.Default.BootWithCaptureEnabled;
         CaptureOnSelf = Properties.Settings.Default.CaptureColorOnSelf;
         SetWindowPosOnStartup = Properties.Settings.Default.SetWindowPosOnStartup;
         CurrentColorType = ColorService.StringToColorType(Properties.Settings.Default.ColorType);
+
+        GlobalHotkey = "";
+
+        IsEnabled = BootWithCaptureEnabled;
     }
 
     public static void Save()
     {   
         if (_isResetting) return; // Don't save if reset
 
-        Properties.Settings.Default.IsFirstBoot = false; // todo
-        //Properties.Settings.Default.GlobalKeybind = GlobalKeybind;
+        Properties.Settings.Default.IsFirstBoot = IsFirstBoot;
+        Properties.Settings.Default.GlobalHotkey = GlobalHotkey;
+        Properties.Settings.Default.GlobalHotkeyEnabled = GlobalHotkeyEnabled;
         Properties.Settings.Default.WindowTop = MainWindow.Top;
         Properties.Settings.Default.WindowLeft = MainWindow.Left;
-        Properties.Settings.Default.BootWithCaptureEnabled = IsEnabled;
+        Properties.Settings.Default.BootWithCaptureEnabled = BootWithCaptureEnabled;
         Properties.Settings.Default.CaptureColorOnSelf = CaptureOnSelf;
         Properties.Settings.Default.SetWindowPosOnStartup = SetWindowPosOnStartup;
         Properties.Settings.Default.ColorType = CurrentColorType.ToString();
@@ -70,7 +73,7 @@ public static class State
 
     public static void Reset()
     {   
-        Console.WriteLine("Resetting settings...");
+        Console.WriteLine("Resetting settings..."); // todo
         _isResetting = true;
 
         Properties.Settings.Default.Reset();
@@ -97,12 +100,15 @@ public static class State
     {
         Console.WriteLine($"\n--- {Config.VersionNumber} ---");
         Console.WriteLine($"- IsFirstBoot: {IsFirstBoot}");
-        Console.WriteLine($"- IsEnabled: {IsEnabled}");
+        Console.WriteLine($"- IsEnabled: {IsEnabled} (override = {Config.IsEnabledOverride.HasValue})");
+        Console.WriteLine($"- BootWithCaptureEnabled: {BootWithCaptureEnabled}");
         Console.WriteLine($"- SetWindowPosOnStartup: {SetWindowPosOnStartup}");
         Console.WriteLine($"- CaptureOnSelf: {CaptureOnSelf}");
         Console.WriteLine($"- WindowTop: {WindowTop}");
         Console.WriteLine($"- WindowLeft: {WindowLeft}");
         Console.WriteLine($"- CurrentColorType: {Properties.Settings.Default.ColorType}");
+        Console.WriteLine($"- GlobalHotkey: {GlobalHotkey}");
+        Console.WriteLine($"- GlobalHotkeyEnabled: {GlobalHotkeyEnabled}");
         Console.WriteLine("");
     }
 }

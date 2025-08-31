@@ -8,6 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="clr-namespace:ColorPicker.Models"
     xmlns:settings="clr-namespace:ColorPicker.Settings"
+    FontFamily="Consolas"
     mc:Ignorable="d">
 
     <Grid

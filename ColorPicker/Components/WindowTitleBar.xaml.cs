@@ -5,8 +5,6 @@ using ColorPicker.Settings;
 
 namespace ColorPicker.Components;
 
-#pragma warning disable CS0162
-
 public partial class WindowTitleBar : UserControl
 {
     public WindowTitleBar()
@@ -14,11 +12,13 @@ public partial class WindowTitleBar : UserControl
         InitializeComponent();
 
         #if !RELEASE
+        #pragma warning disable CS0162
             if (Config.ShowDebugbutton)
                 DebugButton.Visibility = Visibility.Visible;
                 
             if (Config.StartWithSettings)
                 Loaded += SettingsButton_Click;
+        #pragma warning restore CS0162
         #endif
     }
 
@@ -29,7 +29,7 @@ public partial class WindowTitleBar : UserControl
             ColorService.GetIconColor(State.MainWindow.Topmost);
     }
 
-    private void SettingsButton_Click(object sender, RoutedEventArgs e)
+    public void SettingsButton_Click(object sender, RoutedEventArgs e)
     {
         State.IsSettingsOpen = !State.IsSettingsOpen;
 
@@ -57,9 +57,6 @@ public partial class WindowTitleBar : UserControl
 
     private void DebugButton_Click(object sender, RoutedEventArgs e)
     {
-        Console.WriteLine("Debug Reset - AppState");
-        State.Reset(); // todo
+        State.Reset();
     }
 }
-
-#pragma warning restore CS0162

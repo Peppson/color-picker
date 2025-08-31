@@ -1,15 +1,15 @@
 dotnet publish -c Release -r win-x64 --self-contained true -o "$HOME/Desktop"
 
 
-settings window not reseting correclty?
-
+color code meny width
 zoomeview can go ontop of app
+tooltip text
 
-refactor
+GlobalHotkeyEnabled enabled dis?
+global keybind register from user input
+
 lazy load settings component
 welcomepage
-settings component
-
 
 
 // keyboard modifiers

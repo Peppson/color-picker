@@ -18,6 +18,7 @@ public static partial class GlobalHotkeyManager
         {
             // todo
             MessageBox.Show("Failed to register global hotkey. It might be already in use by another application.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            return;
         }
 
         _source = HwndSource.FromHwnd(helper.Handle);
@@ -52,8 +53,7 @@ public static partial class GlobalHotkeyManager
     {
         return key == Key.LeftCtrl || key == Key.RightCtrl ||
             key == Key.LeftShift || key == Key.RightShift ||
-            key == Key.LeftAlt || key == Key.RightAlt ||
-            key == Key.LWin || key == Key.RWin;
+            key == Key.LeftAlt || key == Key.RightAlt;
     }
 
     public static string BuildHotkeyString(ModifierKeys modifiers, Key key)
@@ -63,7 +63,6 @@ public static partial class GlobalHotkeyManager
         if (modifiers.HasFlag(ModifierKeys.Control)) parts.Add("Ctrl");
         if (modifiers.HasFlag(ModifierKeys.Alt)) parts.Add("Alt");
         if (modifiers.HasFlag(ModifierKeys.Shift)) parts.Add("Shift");
-        if (modifiers.HasFlag(ModifierKeys.Windows)) parts.Add("Win");
 
         parts.Add(key.ToString());
         return string.Join(" + ", parts);
@@ -74,7 +73,6 @@ public static partial class GlobalHotkeyManager
         if (modifiers.HasFlag(ModifierKeys.Control)) return "Ctrl";
         if (modifiers.HasFlag(ModifierKeys.Alt)) return "Alt";
         if (modifiers.HasFlag(ModifierKeys.Shift)) return "Shift";
-        if (modifiers.HasFlag(ModifierKeys.Windows)) return "Win";
         
         return modifiers.ToString();
     }

@@ -7,76 +7,173 @@
     xmlns:fa="http://schemas.fontawesome.io/icons/"
     xmlns:local="clr-namespace:ColorPicker.Components"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
+    d:DesignHeight="250"
+    d:DesignWidth="450"
+    FontFamily="Consolas"
     mc:Ignorable="d">
 
-    <Grid Background="{StaticResource SettingsBackground}" PreviewMouseDown="Grid_PreviewMouseDown">
+    <Grid Background="{StaticResource SettingsWindowBackground}" PreviewMouseDown="Grid_PreviewMouseDown">
+        <Grid
+            Margin="4,0,4,4"
+            Background="{StaticResource SettingsBackground}"
+            SnapsToDevicePixels="True">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
+            <Grid Grid.Row="0" Margin="10,18,10,0">
+                <CheckBox
+                    x:Name="CaptureOnBoot"
+                    Height="15"
+                    VerticalContentAlignment="Center"
+                    BorderBrush="{StaticResource Border}"
+                    Content="Enable color capture on startup"
+                    Foreground="{StaticResource PrimaryText}"
+                    IsChecked="{Binding BootWithCaptureEnabled, Mode=TwoWay}" />
 
+                <TextBlock
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    FontWeight="Bold"
+                    Foreground="{StaticResource PrimaryText}"
+                    Text="{x:Static config:Config.VersionNumber}" />
+            </Grid>
 
+            <CheckBox
+                x:Name="CaptureOnSelf"
+                Grid.Row="1"
+                Height="15"
+                Margin="10,12,0,0"
+                VerticalContentAlignment="Center"
+                BorderBrush="{StaticResource Border}"
+                Content="Include this app in color capture"
+                Foreground="{StaticResource PrimaryText}"
+                IsChecked="{Binding CaptureOnSelf, Mode=TwoWay}" />
 
-        <StackPanel>
+            <CheckBox
+                x:Name="SetWindowOnBoot"
+                Grid.Row="2"
+                Height="15"
+                Margin="10,12,0,0"
+                VerticalContentAlignment="Center"
+                BorderBrush="{StaticResource Border}"
+                Content="Remember window position"
+                Foreground="{StaticResource PrimaryText}"
+                IsChecked="{Binding SetWindowPosOnStartup, Mode=TwoWay}" />
 
-            <TextBlock Text="{x:Static config:Config.VersionNumber}" />
-
-
-            <CheckBox x:Name="Onstartup" Content="Set window position on startup" />
-
-            <CheckBox x:Name="CaptureOnSelf" Content="Capture color on self" />
-            <CheckBox x:Name="CaptureOnBoot" Content="Capture enabled at startup" />
-
-
-
-            <StackPanel Margin="0,20,0,20" Orientation="Horizontal">
-
+            <!--  Hotkey  -->
+            <Grid
+                Grid.Row="3"
+                Height="15"
+                Margin="10,12,10,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
                 <CheckBox
                     x:Name="KeybindInputCheckBox"
+                    Grid.Column="0"
                     HorizontalAlignment="Left"
-                    Content="General Hotkey" />
+                    VerticalContentAlignment="Center"
+                    BorderBrush="{StaticResource Border}"
+                    Content="Global hotkey"
+                    Foreground="{StaticResource PrimaryText}"
+                    IsChecked="{Binding GlobalHotkeyEnabled, Mode=TwoWay}" />
+
+                <fa:ImageAwesome
+                    Grid.Column="1"
+                    Width="14"
+                    Height="14"
+                    Margin="0,0,7,-1"
+                    Cursor="Hand"
+                    Icon="InfoCircle">
+                    <fa:ImageAwesome.Style>
+                        <Style TargetType="fa:ImageAwesome">
+                            <Setter Property="Foreground" Value="{StaticResource PrimaryText}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsChecked, ElementName=KeybindInputCheckBox}" Value="False">
+                                    <Setter Property="Foreground" Value="{StaticResource DisableBackground}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </fa:ImageAwesome.Style>
+
+                    <fa:ImageAwesome.ToolTip>
+                        <ToolTip>
+                            <TextBlock>
+                                Hotkey must include at least one modifier:<LineBreak />
+                                Ctrl, Alt, or Shift.</TextBlock>
+                        </ToolTip>
+                    </fa:ImageAwesome.ToolTip>
+                </fa:ImageAwesome>
 
                 <TextBox
                     x:Name="KeybindInput"
-                    Width="200"
-                    Height="20"
-                    Margin="80,-6,0,0"
+                    Grid.Column="2"
+                    Width="140"
+                    Height="22"
+                    Margin="0,-4,0,-4"
+                    Padding="3,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Background="{StaticResource PrimaryText}"
+                    BorderBrush="{StaticResource Border}"
+                    BorderThickness="1"
+                    Cursor="Hand"
                     Focusable="True"
+                    Foreground="Black"
                     GotFocus="KeybindInput_GotFocus"
-                    KeyDown="KeybindInput_KeyDown"
-                    LostFocus="KeybindInput_LostFocus" />
+                    IsEnabled="{Binding IsChecked, ElementName=KeybindInputCheckBox}"
+                    IsReadOnly="True"
+                    LostFocus="KeybindInput_LostFocus"
+                    PreviewKeyDown="KeybindInput_PreviewKeyDown" />
+            </Grid>
 
-
-            </StackPanel>
-
-
-            <Button
-                Width="188"
-                Height="32"
-                Content="Reset with confirm" />
-
-
+            <!--  Github  -->
             <StackPanel
-                Margin="5"
-                VerticalAlignment="Bottom"
+                Grid.Row="5"
+                Margin="10,2,0,10"
+                HorizontalAlignment="Left"
                 Orientation="Horizontal">
-
                 <fa:ImageAwesome
                     x:Name="CopyButtonIcon"
-                    Width="16"
-                    Height="16"
-                    Foreground="Black"
+                    Width="15"
+                    Height="15"
+                    Margin="0,0,3,0"
+                    Foreground="{StaticResource PrimaryText}"
                     Icon="github" />
-
                 <TextBox
                     VerticalAlignment="Center"
                     Background="Transparent"
                     BorderThickness="0"
+                    Foreground="{StaticResource PrimaryText}"
                     IsReadOnly="True"
                     Text="{x:Static config:Config.GithubLink}" />
             </StackPanel>
 
-
-        </StackPanel>
+            <!--  Button  -->
+            <StackPanel
+                Grid.Row="5"
+                Margin="0,4,10,10"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Orientation="Horizontal">
+                <Button
+                    Width="80"
+                    Height="22"
+                    Background="{StaticResource PrimaryText}"
+                    Click="BackButton_Click"
+                    Content="Back"
+                    Cursor="Hand" />
+            </StackPanel>
+        </Grid>
     </Grid>
 </UserControl>
