@@ -1,7 +1,9 @@
 dotnet publish -c Release -r win-x64 --self-contained true -o "$HOME/Desktop"
 
 
+settings window not reseting correclty?
 
+zoomeview can go ontop of app
 
 refactor
 lazy load settings component

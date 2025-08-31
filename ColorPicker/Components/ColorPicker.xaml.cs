@@ -60,7 +60,7 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
 
     private void OnUnloaded(object? sender, RoutedEventArgs e)
     {
-        State.MainWindow.PreviewKeyDown -= Keyboard_Click;
+        State.MainWindow.PreviewKeyDown -= ColorPicker_Keyboard_Click;
     }
 
     private void DropdownButton_Click(object sender, MouseButtonEventArgs e)
@@ -106,8 +106,11 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         e.Handled = true;
     }
 
-    private void Keyboard_Click(object sender, KeyEventArgs e)
-    {
+    private void ColorPicker_Keyboard_Click(object sender, KeyEventArgs e)
+    {   
+        Console.WriteLine("KeyDown ColorPicker"); // todo
+
+
         // CTRL + C
         if (e.Key == Key.C && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
         {
@@ -246,26 +249,28 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
     public string GetColorType()
     {
         return CurrentColorType.ToString();
-    } 
+    }
 
     public void EnableInput()
-    {   
-        State.MainWindow.PreviewKeyDown += Keyboard_Click;
+    {
+        State.MainWindow.PreviewKeyDown += ColorPicker_Keyboard_Click;
+        CompositionTarget.Rendering += OnNewFrame!;
+
         ZoomView.MouseWheel += ZoomView_MouseWheel;
         ZoomView.MouseDown += ZoomView_MouseDown;
         ZoomView.MouseMove += ZoomView_MouseMove;
-        ZoomView.MouseUp += ZoomView_MouseUp;
-        CompositionTarget.Rendering += OnNewFrame!;
+        ZoomView.MouseUp += ZoomView_MouseUp; // todo new window insterad? 
     }
 
     public void DisableInput()
     {
-        State.MainWindow.PreviewKeyDown -= Keyboard_Click;
+        State.MainWindow.PreviewKeyDown -= ColorPicker_Keyboard_Click;
+        CompositionTarget.Rendering -= OnNewFrame!;
+
         ZoomView.MouseWheel -= ZoomView_MouseWheel;
         ZoomView.MouseDown -= ZoomView_MouseDown;
         ZoomView.MouseMove -= ZoomView_MouseMove;
         ZoomView.MouseUp -= ZoomView_MouseUp;
-        CompositionTarget.Rendering -= OnNewFrame!;
     }
 
     private void RegisterSliderParts()

@@ -28,7 +28,7 @@ public partial class MainWindow : Window
         var hwndSource = (HwndSource)PresentationSource.FromVisual(this);
         hwndSource.AddHook(PreventMaximize);
 
-        GlobalKeybindManager.Register(this);
+        GlobalHotkeyManager.Register(this);
     }
 
     private void OnWindowStateChanged(object? sender, EventArgs e)
@@ -44,7 +44,7 @@ public partial class MainWindow : Window
     private void OnWindowClose(object? sender, System.ComponentModel.CancelEventArgs e)
     {
         State.Save();
-        GlobalKeybindManager.UnRegister(this);
+        GlobalHotkeyManager.UnRegister(this);
     }
 
     private void SetWindowPosition()

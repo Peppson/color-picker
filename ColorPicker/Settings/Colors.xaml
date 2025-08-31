@@ -8,4 +8,6 @@
     <SolidColorBrush x:Key="TitleBarBackground" Color="#272727" />
     <SolidColorBrush x:Key="TitleBarButtonHover" Color="#434343" />
     <SolidColorBrush x:Key="TitleBarButtonCloseHover" Color="#e81123" />
+    <SolidColorBrush x:Key="SettingsBackground" Color="#F2F2F2" />
+
 </ResourceDictionary>

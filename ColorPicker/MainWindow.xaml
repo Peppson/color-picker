@@ -9,8 +9,8 @@
     Title="ColorGrab"
     Width="450"
     Height="250"
-    MinWidth="340"
-    MinHeight="176"
+    MinWidth="370"
+    MinHeight="200"
     AllowsTransparency="True"
     FontFamily="Consolas"
     Icon="pack://application:,,,/Assets/FullSizeIcon_32.ico"
@@ -34,15 +34,16 @@
             <components:WindowTitleBar x:Name="TopTitleBar" Grid.Row="0" />
 
             <!--  App  -->
-            <components:ColorPicker x:Name="ColorPicker" Grid.Row="1" />
+            <components:ColorPicker
+                x:Name="ColorPicker"
+                Grid.Row="1"
+                Visibility="Visible" />
 
             <!--  Settings  -->
-            <Border
+            <components:Settings
                 x:Name="SettingsWindow"
                 Grid.Row="1"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Background="Green" />
+                Visibility="Collapsed" />
 
         </Grid>
     </Border>

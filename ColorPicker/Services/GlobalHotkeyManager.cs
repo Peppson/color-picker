@@ -1,13 +1,14 @@
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Interop;
 
 namespace ColorPicker.Services;
 
-public static partial class GlobalKeybindManager
+public static partial class GlobalHotkeyManager
 {
     private const int HOTKEY_ID = 9000;
     private static HwndSource? _source;
-    
+
     public static void Register(Window window, uint modifiers = 0x0002, uint key = 0x20) // todo get dynamic
     {
         var helper = new WindowInteropHelper(window);
@@ -45,5 +46,36 @@ public static partial class GlobalKeybindManager
         }
 
         return IntPtr.Zero;
+    }
+    
+    public static bool IsModifierKey(Key key)
+    {
+        return key == Key.LeftCtrl || key == Key.RightCtrl ||
+            key == Key.LeftShift || key == Key.RightShift ||
+            key == Key.LeftAlt || key == Key.RightAlt ||
+            key == Key.LWin || key == Key.RWin;
+    }
+
+    public static string BuildHotkeyString(ModifierKeys modifiers, Key key)
+    {
+        var parts = new List<string>();
+
+        if (modifiers.HasFlag(ModifierKeys.Control)) parts.Add("Ctrl");
+        if (modifiers.HasFlag(ModifierKeys.Alt)) parts.Add("Alt");
+        if (modifiers.HasFlag(ModifierKeys.Shift)) parts.Add("Shift");
+        if (modifiers.HasFlag(ModifierKeys.Windows)) parts.Add("Win");
+
+        parts.Add(key.ToString());
+        return string.Join(" + ", parts);
+    }
+
+    public static string GetModifierKey(ModifierKeys modifiers)
+    {
+        if (modifiers.HasFlag(ModifierKeys.Control)) return "Ctrl";
+        if (modifiers.HasFlag(ModifierKeys.Alt)) return "Alt";
+        if (modifiers.HasFlag(ModifierKeys.Shift)) return "Shift";
+        if (modifiers.HasFlag(ModifierKeys.Windows)) return "Win";
+        
+        return modifiers.ToString();
     }
 }

@@ -8,7 +8,7 @@ public static class State
 {
     public static bool IsFirstBoot { get; set; }
     public static bool IsEnabled { get; set; }
-    public static bool GlobalKeybind { get; set; }
+    public static string GlobalKeybind { get; set; } = "";
     public static bool SetWindowPosOnStartup { get; set; }
     public static ColorTypes CurrentColorType { get; set; }
     public static double WindowTop { get; set; }
@@ -40,7 +40,10 @@ public static class State
     public static void LoadFromMemory()
     {
         IsFirstBoot = Properties.Settings.Default.IsFirstBoot;
+
         //GlobalKeybind = Properties.Settings.Default.GlobalKeybind; todo make
+        GlobalKeybind = "Random keybind";
+
         WindowTop = Properties.Settings.Default.WindowTop;
         WindowLeft = Properties.Settings.Default.WindowLeft;
         IsEnabled = Properties.Settings.Default.BootWithCaptureEnabled;
