@@ -81,8 +81,7 @@ public partial class MainWindow : Window
 
     private void IsFirstBootWindow() 
     {
-        if (!Config.BootWithWelcomeWindow && !State.IsFirstBoot)
-            return;
+        if (!Config.BootWithWelcomeWindow && !State.IsFirstBoot) return;
 
         State.IsEnabled = false;
         var welcomeWindow = new Windows.WelcomeWindow

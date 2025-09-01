@@ -8,7 +8,7 @@ public static class Config
     public static readonly bool? IsEnabledOverride = null;
     public const bool ShowDebugbutton = false;
     public const bool BootWithSettings = false;
-    public const bool BootWithWelcomeWindow = true;
+    public const bool BootWithWelcomeWindow = true; // todo
 
     // Constants
     public const int MaxSamplesPerSecond = 120;

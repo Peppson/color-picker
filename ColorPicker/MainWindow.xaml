@@ -41,7 +41,6 @@
 
             <!--  Settings  -->
             <ContentPresenter x:Name="Settings" Grid.Row="1" />
-
         </Grid>
     </Border>
 </Window>

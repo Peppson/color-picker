@@ -4,7 +4,6 @@
     <SolidColorBrush x:Key="WindowBackground" Color="#161616" />
     <SolidColorBrush x:Key="PrimaryText" Color="#f7fbfe" />
     <SolidColorBrush x:Key="Border" Color="#434343" />
-
     <SolidColorBrush x:Key="TitleBarBackground" Color="#161616" />
     <SolidColorBrush x:Key="TitleBarButtonHover" Color="#434343" />
     <SolidColorBrush x:Key="TitleBarButtonCloseHover" Color="#e81123" />
@@ -15,5 +14,11 @@
     <SolidColorBrush x:Key="SettingsBackground" Color="#262626" />
     <SolidColorBrush x:Key="HotkeyBorder" Color="#434343" />
     <SolidColorBrush x:Key="DisableBackground" Color="#A1A3A4" />
+
+    <!--  Logo Colors  -->
+    <SolidColorBrush x:Key="LogoRed" Color="#F16E5D" />
+    <SolidColorBrush x:Key="LogoYellow" Color="#E1BC3D" />
+    <SolidColorBrush x:Key="LogoBlue" Color="#79B0DE" />
+    <SolidColorBrush x:Key="LogoGreen" Color="#79DD8F" />
 
 </ResourceDictionary>

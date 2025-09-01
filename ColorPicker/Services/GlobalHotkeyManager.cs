@@ -17,7 +17,7 @@ public static partial class GlobalHotkeyManager
         string[] parts = hotkey
             .Split('+', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
             .Select(p => p.ToLower())
-            .ToArray();
+            .ToArray()!;
 
         uint modifiers = GetMappedModifiers(parts);
         var key = GetMappedKey(parts[^1]);

@@ -1,4 +1,10 @@
 
 dotnet publish -c Release -r win-x64 --self-contained true -o "$HOME/Desktop"
 
-welcomepage
+
+welcomepage + buttons style
+
+
+readme update 
+msstore?
+pipeline?

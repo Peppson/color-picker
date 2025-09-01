@@ -16,6 +16,7 @@
 
             <svc:EnumToBoolConverter x:Key="EnumToBoolConverter" />
             <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+            
         </ResourceDictionary>
     </Application.Resources>
 </Application>

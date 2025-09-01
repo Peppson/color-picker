@@ -44,14 +44,13 @@
   <!-- Assets -->
   <ItemGroup>
     <None Remove="Assets\FullSizeIcon_32.ico" />
-    <None Remove="Assets\kör.png" />
+    <None Remove="Assets\WelcomePic.png" />
   </ItemGroup>
-
   <ItemGroup>
     <Resource Include="Assets\FullSizeIcon_32.ico">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Assets\kör.png">
+    <Resource Include="Assets\WelcomePic.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
@@ -79,7 +78,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
   </ItemGroup>
-
   <ItemGroup>
     <None Update="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
