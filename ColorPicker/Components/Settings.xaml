@@ -13,10 +13,7 @@
     mc:Ignorable="d">
 
     <Grid Background="{StaticResource SettingsWindowBackground}" PreviewMouseDown="Grid_PreviewMouseDown">
-        <Grid
-            Margin="4,0,4,4"
-            Background="{StaticResource SettingsBackground}"
-            SnapsToDevicePixels="True">
+        <Grid Background="{StaticResource SettingsBackground}" SnapsToDevicePixels="True">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />

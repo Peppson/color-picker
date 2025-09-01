@@ -1,7 +1,7 @@
 ﻿ <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <AssemblyName>ColorGrab</AssemblyName>
+    <AssemblyName>ColorPick</AssemblyName>
     <AppVersion>1.0.1</AppVersion>
     <TargetFramework>net9.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
@@ -44,14 +44,17 @@
   <!-- Assets -->
   <ItemGroup>
     <None Remove="Assets\FullSizeIcon_32.ico" />
+    <None Remove="Assets\kör.png" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="Assets\FullSizeIcon_32.ico">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Assets\kör.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
-  
 
   <!-- Misc -->
   <ItemGroup>

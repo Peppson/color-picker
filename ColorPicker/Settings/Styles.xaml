@@ -8,7 +8,7 @@
     <!--  Window border  -->
     <Style x:Key="WindowBorderStyle" TargetType="{x:Type Border}">
         <Setter Property="BorderBrush" Value="{StaticResource WindowBorder}" />
-        <Setter Property="BorderThickness" Value="2,1,2,2" />
+        <Setter Property="BorderThickness" Value="2,0,2,2" />
         <Style.Triggers>
             <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=WindowState}" Value="Maximized">
                 <Setter Property="BorderThickness" Value="0" />
@@ -115,6 +115,7 @@
                                         <ControlTemplate TargetType="Thumb">
                                             <Border
                                                 x:Name="PART_ThumbBorder"
+                                                Background="Black"
                                                 BorderBrush="Transparent"
                                                 BorderThickness="1" />
                                         </ControlTemplate>

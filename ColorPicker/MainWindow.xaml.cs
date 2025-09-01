@@ -6,7 +6,22 @@ using ColorPicker.Settings;
 namespace ColorPicker;
 
 public partial class MainWindow : Window
-{
+{   
+    internal Components.Settings? _settingsWindow;
+
+    public Components.Settings SettingsWindow
+    {
+        get
+        {
+            if (_settingsWindow == null)
+            {
+                _settingsWindow = new Components.Settings();
+                Settings.Content = _settingsWindow;
+            }
+            return _settingsWindow;
+        }
+    }
+
     public MainWindow()
     {
         InitializeComponent();
@@ -16,11 +31,11 @@ public partial class MainWindow : Window
         StateChanged += OnWindowStateChanged;
         SizeChanged += OnWindowSizeOrLocationChanged;
         LocationChanged += OnWindowSizeOrLocationChanged;
+        Loaded += OnLoaded;
         Closing += OnWindowClose;
 
         State.Init(this);
         SetWindowPosition();
-        IsFirstBootWindow();
     }
 
     private void OnSourceInitialized(object? sender, EventArgs e)
@@ -30,6 +45,11 @@ public partial class MainWindow : Window
         hwndSource.AddHook(PreventMaximize);
 
         if (!GlobalHotkeyManager.Register(this, State.GlobalHotkey!)) State.GlobalHotkey = "";
+    }
+
+    private void OnLoaded(object sender, RoutedEventArgs e)
+    {
+        IsFirstBootWindow();
     }
 
     private void OnWindowStateChanged(object? sender, EventArgs e)
@@ -61,21 +81,16 @@ public partial class MainWindow : Window
 
     private void IsFirstBootWindow() 
     {
-        if (!Config.BootWithWelcomeWindow && !State.IsFirstBoot) return; // todo
-        State.IsFirstBoot = false;
+        if (!Config.BootWithWelcomeWindow && !State.IsFirstBoot) return;
+        State.IsEnabled = false;
+        
+        var welcomeWindow = new Windows.WelcomeWindow
+        {
+            Owner = this
+        };
 
-
-        Console.WriteLine("First boot, showing welcome message.");
-
-        /* MessageBox.Show( 
-            "Welcome to ColorPicker!\n\n" +
-            "To get started, hover over any area of your screen to pick a color.\n\n" +
-            "You can change settings by clicking the gear icon in the top-right corner.\n\n" +
-            "Enjoy!",
-            "Welcome to ColorPicker",
-            MessageBoxButton.OK,
-            MessageBoxImage.Information
-        ); */
+        welcomeWindow.ShowDialog();
+        State.IsEnabled = true;
     }
 
     private IntPtr PreventMaximize(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)

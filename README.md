@@ -3,7 +3,7 @@
 
 
 <!-- 
-# ColorGrab [![.NET](https://img.shields.io/badge/.NET-9.0-512BD4)](https://dotnet.microsoft.com/download) [![WPF](https://img.shields.io/badge/WPF-512BD4?logo=windows&logoColor=white)](https://learn.microsoft.com/dotnet/desktop/wpf/)  
+# ColorPick [![.NET](https://img.shields.io/badge/.NET-9.0-512BD4)](https://dotnet.microsoft.com/download) [![WPF](https://img.shields.io/badge/WPF-512BD4?logo=windows&logoColor=white)](https://learn.microsoft.com/dotnet/desktop/wpf/)  
 
 Lightweight color picker that grabs any pixel color from the mouse cursor.  
 View and copy color codes in `HEX`, `RGB`, `HSV`, `HSL` and `CMYK`, with zoom view for precise selection.  

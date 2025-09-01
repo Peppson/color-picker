@@ -23,12 +23,12 @@
             Grid.Column="0"
             Width="18"
             Height="18"
-            Margin="5,0,1,0"
+            Margin="6,0,1,0"
             Source="/Assets/FullSizeIcon_32.ico" />
 
         <TextBlock
             Grid.Column="1"
-            Margin="4,0,0,0"
+            Margin="6,0,0,0"
             VerticalAlignment="Center"
             FontSize="13"
             Foreground="{StaticResource PrimaryText}"
