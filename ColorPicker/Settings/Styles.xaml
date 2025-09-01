@@ -134,7 +134,7 @@
         <Setter Property="BorderBrush" Value="{StaticResource Border}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Padding" Value="4" />
-        <Setter Property="Width" Value="80" />
+        <Setter Property="Width" Value="90" />
         <Setter Property="HasDropShadow" Value="True" />
         <Setter Property="Template">
             <Setter.Value>
@@ -173,7 +173,6 @@
                             <!--  Checkmark  -->
                             <TextBlock
                                 Grid.Column="0"
-                                Margin="0,0,0,0"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 FontSize="15"
@@ -185,9 +184,11 @@
                             <!--  Text  -->
                             <ContentPresenter
                                 Grid.Column="1"
+                                Margin="6,0,0,0"
                                 VerticalAlignment="Center"
                                 Content="{TemplateBinding Header}"
                                 TextBlock.Foreground="{TemplateBinding Foreground}" />
+
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>

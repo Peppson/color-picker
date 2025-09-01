@@ -16,7 +16,7 @@ public partial class WindowTitleBar : UserControl
             if (Config.ShowDebugbutton)
                 DebugButton.Visibility = Visibility.Visible;
                 
-            if (Config.StartWithSettings)
+            if (Config.BootWithSettings)
                 Loaded += SettingsButton_Click;
         #pragma warning restore CS0162
         #endif
@@ -57,6 +57,6 @@ public partial class WindowTitleBar : UserControl
 
     private void DebugButton_Click(object sender, RoutedEventArgs e)
     {
-        State.Reset();
+        State.ResetDebug();
     }
 }

@@ -33,7 +33,7 @@ public static class State
 
         #if !RELEASE
             if (Config.IsEnabledOverride != null) IsEnabled = Config.IsEnabledOverride.Value;
-            StartupLogDebug();
+            DebugStartupLog();
         #endif
     }
 
@@ -54,7 +54,7 @@ public static class State
 
     public static void Save()
     {   
-        if (_isResetting) return; // Don't save if reset
+        if (_isResetting) return; // Don't save if reseting
 
         Properties.Settings.Default.IsFirstBoot = IsFirstBoot;
         Properties.Settings.Default.GlobalHotkey = GlobalHotkey;
@@ -69,21 +69,6 @@ public static class State
         Properties.Settings.Default.Save();
     }
 
-    public static void Reset()
-    {   
-        Console.WriteLine("Resetting settings..."); // todo
-        _isResetting = true;
-
-        Properties.Settings.Default.Reset();
-        Properties.Settings.Default.Save();
-
-        // todo
-        var currentExe = Environment.ProcessPath ?? throw new InvalidOperationException("Could not get process path");
-        System.Diagnostics.Process.Start(currentExe);
-    
-        Application.Current.Shutdown();
-    }
-
     public static void UpdateMainWindowPos()
     {
         MainWindowPos = new System.Drawing.Rectangle(
@@ -94,7 +79,20 @@ public static class State
         );
     }
 
-    private static void StartupLogDebug()
+    public static void ResetDebug()
+    {   
+        _isResetting = true;
+        Properties.Settings.Default.Reset();
+        Properties.Settings.Default.Save();
+
+        // Force restart
+        var currentExe = Environment.ProcessPath ??
+            throw new InvalidOperationException("Could not get process path");
+        System.Diagnostics.Process.Start(currentExe);
+        Application.Current.Shutdown();
+    }
+
+    private static void DebugStartupLog()
     {
         Console.WriteLine($"\n--- {Config.VersionNumber} ---");
         Console.WriteLine($"- IsFirstBoot: {IsFirstBoot}");

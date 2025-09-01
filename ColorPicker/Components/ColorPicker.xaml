@@ -132,7 +132,7 @@
                         MouseLeftButtonUp="DropdownButton_Click">
                         <Border.ToolTip>
                             <TextBlock>
-                                Color codes<LineBreak />
+                                Format options<LineBreak />
                                 ● Right-click to open at mouse</TextBlock>
                         </Border.ToolTip>
                         <fa:ImageAwesome
@@ -267,7 +267,7 @@
                         <TextBlock>
                             Pause/resume<LineBreak />
                             ● Spacebar<LineBreak />
-                            ● Custom keybind</TextBlock>
+                            ● Custom hotkey</TextBlock>
                     </Grid.ToolTip>
 
                     <Border Width="18" Height="18">

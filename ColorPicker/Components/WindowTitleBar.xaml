@@ -63,7 +63,7 @@
             RenderOptions.EdgeMode="Aliased"
             Style="{StaticResource TitleBarButtonStyle}">
             <Button.ToolTip>
-                Open settings
+                Settings
             </Button.ToolTip>
             <fa:ImageAwesome
                 x:Name="SettingsButtonIcon"

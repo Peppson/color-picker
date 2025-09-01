@@ -6,8 +6,9 @@ public static class Config
 {
     // Overrides
     public static readonly bool? IsEnabledOverride = null;
-    public const bool ShowDebugbutton = false;
-    public const bool StartWithSettings = false;
+    public const bool ShowDebugbutton = true;
+    public const bool BootWithSettings = false;
+    public const bool BootWithWelcomeWindow = true;
 
     // Constants
     public const int MaxSamplesPerSecond = 120;

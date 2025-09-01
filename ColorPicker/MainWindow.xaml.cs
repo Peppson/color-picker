@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Interop;
 using ColorPicker.Services;
+using ColorPicker.Settings;
 
 namespace ColorPicker;
 
@@ -28,8 +29,7 @@ public partial class MainWindow : Window
         var hwndSource = (HwndSource)PresentationSource.FromVisual(this);
         hwndSource.AddHook(PreventMaximize);
 
-        if (!GlobalHotkeyManager.Register(this, State.GlobalHotkey!))
-            State.GlobalHotkey = "";
+        if (!GlobalHotkeyManager.Register(this, State.GlobalHotkey!)) State.GlobalHotkey = "";
     }
 
     private void OnWindowStateChanged(object? sender, EventArgs e)
@@ -55,16 +55,19 @@ public partial class MainWindow : Window
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             return;
         }
-
         this.Top = State.WindowTop;
         this.Left = State.WindowLeft;
     }
 
-    private void IsFirstBootWindow() // todo
+    private void IsFirstBootWindow() 
     {
-        if (!State.IsFirstBoot) return;
+        if (!Config.BootWithWelcomeWindow && !State.IsFirstBoot) return; // todo
+        State.IsFirstBoot = false;
 
-        MessageBox.Show( 
+
+        Console.WriteLine("First boot, showing welcome message.");
+
+        /* MessageBox.Show( 
             "Welcome to ColorPicker!\n\n" +
             "To get started, hover over any area of your screen to pick a color.\n\n" +
             "You can change settings by clicking the gear icon in the top-right corner.\n\n" +
@@ -72,9 +75,7 @@ public partial class MainWindow : Window
             "Welcome to ColorPicker",
             MessageBoxButton.OK,
             MessageBoxImage.Information
-        );
-
-        State.IsFirstBoot = false;
+        ); */
     }
 
     private IntPtr PreventMaximize(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
