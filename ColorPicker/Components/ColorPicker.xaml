@@ -69,7 +69,7 @@
                     <Slider.ToolTip>
                         <TextBlock>
                             Zoom<LineBreak />
-                            ● Mouse scrollwheel</TextBlock>
+                            ● Mouse scroll wheel</TextBlock>
                     </Slider.ToolTip>
                 </Slider>
 
@@ -265,7 +265,7 @@
                     MouseLeftButtonUp="ToggleEnabled_Click">
                     <Grid.ToolTip>
                         <TextBlock>
-                            Pause/resume<LineBreak />
+                            Pause/Run<LineBreak />
                             ● Spacebar<LineBreak />
                             ● Custom hotkey</TextBlock>
                     </Grid.ToolTip>

@@ -10,7 +10,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="ColorPick"
     Width="640"
-    Height="400"
+    Height="470"
     AllowsTransparency="True"
     Background="{StaticResource SettingsWindowBackground}"
     FontFamily="Consolas"
@@ -74,98 +74,175 @@
                 </Button>
             </Grid>
 
-            <!--  Content  -->
+            <!--  Window  -->
             <Grid Grid.Row="1" Background="{StaticResource SettingsBackground}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-                <Grid Panel.ZIndex="1" IsHitTestVisible="False">
-
-                    <!--
-                    <Rectangle
-                        Height="2"
-                        Margin="249,32,297,333"
-                        Fill="{StaticResource PrimaryText}" />
-                    -->
-
+                <!--  H1  -->
+                <Grid Grid.Row="0" Margin="20,16,0,8">
                     <TextBlock
-                        Margin="254,17,-234,-23"
-                        FontSize="11"
+                        HorizontalAlignment="Left"
+                        FontSize="16"
+                        FontWeight="bold"
                         Foreground="{StaticResource PrimaryText}"
-                        Text="Open settings" />
-                    <Rectangle
-                        Width="35"
-                        Height="1"
-                        Margin="281,50,220,315"
-                        Fill="{StaticResource PrimaryText}">
-                        <Rectangle.RenderTransform>
-                            <RotateTransform Angle="45" CenterX="25" CenterY="0.5" />
-                        </Rectangle.RenderTransform>
-                    </Rectangle>
+                        Text="Getting Started" />
+                </Grid>
 
-                    <TextBlock
-                        Margin="460,17,-440,-23"
-                        FontSize="11"
-                        Foreground="{StaticResource PrimaryText}"
-                        Text="Keep this window ontop" />
-                    <Rectangle
-                        Width="35"
-                        Height="1"
-                        Margin="410,50,192,314"
-                        Fill="{StaticResource PrimaryText}">
-                        <Rectangle.RenderTransform>
-                            <RotateTransform Angle="135" CenterX="25" CenterY="0.5" />
-                        </Rectangle.RenderTransform>
-                    </Rectangle>
+                <!--  Image  -->
+                <Grid Grid.Row="1">
+                    <Image
+                        Width="510"
+                        Height="310"
+                        Margin="0,0,0,15"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Panel.ZIndex="0"
+                        Source="/Assets/kör.png" />
 
+                    <!--  Lines and text  -->
+                    <Grid Panel.ZIndex="1" IsHitTestVisible="False">
 
+                        <!--  Settings  -->
+                        <TextBlock
+                            Margin="293,33,278,315"
+                            Foreground="{StaticResource PrimaryText}"
+                            Text="Settings" />
+                        <Rectangle
+                            Width="24"
+                            Height="1"
+                            Margin="367,64,245,301"
+                            Fill="{StaticResource PrimaryText}">
+                            <Rectangle.RenderTransform>
+                                <RotateTransform Angle="225" CenterX="0" CenterY="0.5" />
+                            </Rectangle.RenderTransform>
+                        </Rectangle>
 
+                        <!--  Ontop  -->
+                        <TextBlock
+                            Margin="448,33,14,309"
+                            Foreground="{StaticResource PrimaryText}"
+                            Text="Keep this window ontop" />
+                        <Rectangle
+                            Width="24"
+                            Height="1"
+                            Margin="444,47,168,318"
+                            Fill="{StaticResource PrimaryText}">
+                            <Rectangle.RenderTransform>
+                                <RotateTransform Angle="135" CenterX="0" CenterY="0.5" />
+                            </Rectangle.RenderTransform>
+                        </Rectangle>
 
+                        <!--  Format  -->
+                        <TextBlock
+                            Margin="158,33,373,316"
+                            Foreground="{StaticResource PrimaryText}"
+                            Text="Format options" />
+                        <Rectangle
+                            Width="60"
+                            Height="1"
+                            Margin="298,90,278,275"
+                            Fill="{StaticResource PrimaryText}">
+                            <Rectangle.RenderTransform>
+                                <RotateTransform Angle="225" CenterX="0" CenterY="0.5" />
+                            </Rectangle.RenderTransform>
+                        </Rectangle>
 
+                        <!--  Zoom  -->
+                        <TextBlock
+                            Margin="64,61,526,284"
+                            Foreground="{StaticResource PrimaryText}"
+                            Text="Zoom" />
+                        <Rectangle
+                            Width="24"
+                            Height="1"
+                            Margin="112,92,500,273"
+                            Fill="{StaticResource PrimaryText}">
+                            <Rectangle.RenderTransform>
+                                <RotateTransform Angle="225" CenterX="0" CenterY="0.5" />
+                            </Rectangle.RenderTransform>
+                        </Rectangle>
+
+                        <!--  Slider  -->
+                        <TextBlock
+                            Margin="44,301,499,45"
+                            Foreground="{StaticResource PrimaryText}"
+                            Text="Adjust zoom" />
+                        <Rectangle
+                            Width="24"
+                            Height="1"
+                            Margin="138,285,474,80"
+                            Fill="{StaticResource PrimaryText}">
+                            <Rectangle.RenderTransform>
+                                <RotateTransform Angle="135" CenterX="0" CenterY="0.5" />
+                            </Rectangle.RenderTransform>
+                        </Rectangle>
+
+                        <!--  Pause/Run  -->
+                        <TextBlock
+                            Margin="339,301,226,45"
+                            Foreground="{StaticResource PrimaryText}"
+                            Text="Pause/Run" />
+                        <Rectangle
+                            Width="24"
+                            Height="1"
+                            Margin="316,285,296,80"
+                            Fill="{StaticResource PrimaryText}">
+                            <Rectangle.RenderTransform>
+                                <RotateTransform Angle="45" CenterX="0" CenterY="0.5" />
+                            </Rectangle.RenderTransform>
+                        </Rectangle>
+
+                        <!--  Copy  -->
+                        <TextBlock
+                            Margin="544,131,22,215"
+                            Foreground="{StaticResource PrimaryText}"
+                            Text="Copy" />
+                        <Rectangle
+                            Width="24"
+                            Height="1"
+                            Margin="522,114,90,251"
+                            Fill="{StaticResource PrimaryText}">
+                            <Rectangle.RenderTransform>
+                                <RotateTransform Angle="45" CenterX="0" CenterY="0.5" />
+                            </Rectangle.RenderTransform>
+                        </Rectangle>
+                    </Grid>
                 </Grid>
 
 
+                <Grid Grid.Row="2" Margin="0,-20,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="60" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="60" />
+                    </Grid.ColumnDefinitions>
 
-
-                <Grid
-                    Grid.Row="1"
-                    Margin="10"
-                    Panel.ZIndex="0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-
-
-
-
-                    <Image
-                        Grid.Row="1"
-                        Width="510"
-                        Height="310"
-                        Source="/Assets/kör.png" />
-
-
-
+                    <Button
+                        Grid.Column="1"
+                        Width="120"
+                        Height="30"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Click="Ok_Click"
+                        Content="Got it!"
+                        Cursor="Hand"
+                        IsCancel="True" />
 
                     <TextBlock
-                        Grid.Row="2"
-                        Margin="30,0,0,0"
+                        Grid.Column="2"
+                        Margin="0,0,20,0"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
                         FontWeight="Bold"
                         Foreground="{StaticResource PrimaryText}"
                         Text="{x:Static config:Config.VersionNumber}" />
-
-                    <Button
-                        Grid.Row="2"
-                        Width="120"
-                        Height="30"
-                        HorizontalAlignment="Center"
-                        Click="Ok_Click"
-                        Content="Got it!"
-                        Cursor="Hand"
-                        IsCancel="True" />
                 </Grid>
+
+
             </Grid>
         </Grid>
     </Border>
