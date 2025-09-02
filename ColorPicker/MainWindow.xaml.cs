@@ -48,8 +48,14 @@ public partial class MainWindow : Window
     }
 
     private void OnLoaded(object sender, RoutedEventArgs e)
-    {
-        IsFirstBootWindow();
+    {   
+        #pragma warning disable CS0162
+        if (Config.IsWelcomeWindowEnabled)
+        {
+            IsFirstBootWindow();
+        }
+        #pragma warning restore CS0162
+        
         State.UpdateMainWindowPos();
     }
 

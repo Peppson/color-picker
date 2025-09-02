@@ -123,6 +123,7 @@ public static class ColorService
         _picker.DropdownButtonIcon.Foreground = brush;
         _picker.CopyButtonIcon.Foreground = brush;
         _picker.IsEnabledIcon.Foreground = brush;
+        _picker.InfoButtonIcon.Foreground = brush;
 
         // Message
         if (MessageService.IsMessageOpen)

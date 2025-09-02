@@ -6,12 +6,15 @@ namespace ColorPicker.Components;
 public class SettingsViewModel : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
+    
+    private void OnPropertyChanged(string propName) =>
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
 
     public bool SetWindowPosOnStartup
     {
         get => State.SetWindowPosOnStartup;
         set
-        { 
+        {
             if (State.SetWindowPosOnStartup != value)
             {
                 State.SetWindowPosOnStartup = value;
@@ -58,7 +61,4 @@ public class SettingsViewModel : INotifyPropertyChanged
             }
         }
     }
-
-    private void OnPropertyChanged(string propName) =>
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
 }

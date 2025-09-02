@@ -4,11 +4,14 @@ namespace ColorPicker.Settings;
 
 public static class Config
 {
-    // Overrides
-    public static readonly bool? IsEnabledOverride = null;
+    // Flags
+    public static readonly bool? IsEnabledOverride = null; // null = disabled
+    public const bool IsWelcomeWindowEnabled = false;
+
+    // Debug
     public const bool ShowDebugbutton = false;
     public const bool BootWithSettings = false;
-    public const bool BootWithWelcomeWindow = true; // todo
+    public const bool BootWithWelcomeWindow = true;
 
     // Constants
     public const int MaxSamplesPerSecond = 120;

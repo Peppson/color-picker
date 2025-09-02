@@ -48,7 +48,7 @@
                 Margin="10,12,0,0"
                 VerticalContentAlignment="Center"
                 BorderBrush="{StaticResource Border}"
-                Content="Include this app in color capture"
+                Content="Include ColorPick in color capture"
                 Foreground="{StaticResource PrimaryText}"
                 IsChecked="{Binding CaptureOnSelf, Mode=TwoWay}" />
 
@@ -90,7 +90,8 @@
                     Height="14"
                     Margin="0,0,7,-1"
                     Cursor="Hand"
-                    Icon="InfoCircle">
+                    Icon="QuestionCircle"
+                    ToolTipService.InitialShowDelay="100">
                     <fa:ImageAwesome.Style>
                         <Style TargetType="fa:ImageAwesome">
                             <Setter Property="Foreground" Value="{StaticResource PrimaryText}" />

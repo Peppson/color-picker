@@ -2,11 +2,16 @@
 dotnet publish -c Release -r win-x64 --self-contained true -o "$HOME/Desktop"
 
 
-welcomepage + buttons style
 
-Onwindow bug laptop screen width? screen resolution 125% buggy
-backspace + delete reset keybind field 
+
 pill och mouse på zoomview? bara när paused? 
-readme update right path
+keybind input field colors 
+
+settings button same as welcome
+ 
+welcomepage?
+
+
+Readme
 msstore?
 pipeline?

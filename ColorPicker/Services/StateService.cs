@@ -71,12 +71,9 @@ public static class State
 
     public static void UpdateMainWindowPos()
     {   
-        if (!MainWindow.IsLoaded)
-        {
-            Console.WriteLine("MainWindow not loaded yet - skipping UpdateMainWindowPos");
-            return;
-        }
-
+        if (!MainWindow.IsLoaded) return;
+        
+        // DPI aware position
         var topLeft = MainWindow.PointToScreen(new Point(0, 0));
         var bottomRight = MainWindow.PointToScreen(new Point(MainWindow.ActualWidth, MainWindow.ActualHeight));
         

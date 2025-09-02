@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Runtime.CompilerServices;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using ColorPicker.Services;
@@ -49,13 +50,9 @@ public partial class Settings : UserControl
         var key = (e.Key == Key.System) ? e.SystemKey : e.Key;
         e.Handled = true;
 
-        // Cancel
-        if (key == Key.Escape)
-        {
-            ClearFocus(true);
-            RefreshHotkeyInput();
+        // Spacebar, Back, Delete, Escape
+        if (HandleSpecialKeys(key))
             return;
-        }
 
         // Require at least one modifier
         if (modifierKey == ModifierKeys.None)
@@ -80,6 +77,11 @@ public partial class Settings : UserControl
         }
         
         // Set new hotkey
+        RegisterHotkey(hotkey);
+    }
+
+    private void RegisterHotkey(string hotkey)
+    {
         if (!GlobalHotkeyManager.Register(State.MainWindow, hotkey))
         {
             MessageService.ShowMessageBox("Failed to register hotkey. It might already be in use by another application.");
@@ -91,8 +93,30 @@ public partial class Settings : UserControl
         RefreshHotkeyInput();
     }
 
-    private void ClearFocus(bool clearKeyboardFocus = false)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private bool HandleSpecialKeys(Key key)
     {   
+        // Clear hotkey
+        if (key == Key.Back || key == Key.Delete)
+        {
+            State.GlobalHotkey = "";
+            GlobalHotkeyManager.UnRegister(State.MainWindow);
+            RefreshHotkeyInput();
+            return true;
+        }
+        // Cancel input
+        else if (key == Key.Escape || key == Key.Enter)
+        {
+            ClearFocus(true);
+            RefreshHotkeyInput();
+            return true;
+        }
+
+        return false;
+    }
+
+    private void ClearFocus(bool clearKeyboardFocus = false)
+    {
         FocusManager.SetFocusedElement(FocusManager.GetFocusScope(KeybindInput), null);
         if (clearKeyboardFocus) Keyboard.ClearFocus();
     }

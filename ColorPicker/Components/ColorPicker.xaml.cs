@@ -117,15 +117,26 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         }
 
         // Spacebar 
-        else if (e.Key == Key.Space)
+        if (e.Key == Key.Space)
         {
             ToggleIsEnabled();
             e.Handled = true;
             return;
         }
-        
+
         // Arrow keys
-        else if (e.Key == Key.Left)
+        HandleArrowKeyMovement(sender, e);
+
+        UpdateColors(_lastMousePos);
+        e.Handled = true;
+    }
+
+    private void HandleArrowKeyMovement(object sender, KeyEventArgs e)
+    {   
+        // Only allow arrowkeys after capture
+        if (State.IsEnabled) return;
+
+        if (e.Key == Key.Left)
             _lastMousePos.X--;
         else if (e.Key == Key.Right)
             _lastMousePos.X++;
@@ -133,9 +144,6 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
             _lastMousePos.Y--;
         else if (e.Key == Key.Down)
             _lastMousePos.Y++;
-
-        UpdateColors(_lastMousePos);
-        e.Handled = true;
     }
 
     private void ZoomView_MouseWheel(object sender, MouseWheelEventArgs e)
@@ -154,12 +162,14 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
     {
         State.IsEnabled = !State.IsEnabled;
         SetIsEnabledIcon(State.IsEnabled);
+        OnPropertyChanged(nameof(IsEnabledProxy));
     }
 
     public void SetIsEnabled(bool enabled)
     {
         State.IsEnabled = enabled;
         SetIsEnabledIcon(State.IsEnabled);
+        OnPropertyChanged(nameof(IsEnabledProxy));
     }
 
     private void SetIsEnabledIcon(bool running)
@@ -168,7 +178,10 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
     }
 
     private void ZoomView_MouseDown(object sender, MouseButtonEventArgs e)
-    {
+    {   
+        // Only allow dragging after capture
+        if (State.IsEnabled) return;
+        
         if (e.LeftButton == MouseButtonState.Pressed)
         {
             _isDragging = true;

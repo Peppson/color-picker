@@ -49,6 +49,8 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         }
     }
 
+    public bool IsEnabledProxy => State.IsEnabled;
+
     public int ZoomPercent =>
         (_zoomLevel - (int)Config.MinZoomLevel) * 100 / ((int)Config.MaxZoomLevel - (int)Config.MinZoomLevel); // Ugly af
     public Border? Slider_1 { get; set; }
