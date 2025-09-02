@@ -7,6 +7,8 @@
     xmlns:local="clr-namespace:ColorPicker.Components"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="clr-namespace:ColorPicker.Models"
+    xmlns:settings="clr-namespace:ColorPicker.Settings"
+    FontFamily="Consolas"
     mc:Ignorable="d">
 
     <Grid
@@ -29,7 +31,7 @@
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch">
                 <Image
-                    x:Name="ZoomImage"
+                    x:Name="ZoomView"
                     Margin="0,0,0,0"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
@@ -59,15 +61,15 @@
                     Focusable="False"
                     IsSnapToTickEnabled="True"
                     IsTabStop="False"
-                    Maximum="91"
-                    Minimum="11"
+                    Maximum="{x:Static settings:Config.MaxZoomLevel}"
+                    Minimum="{x:Static settings:Config.MinZoomLevel}"
                     Style="{StaticResource ZoomSliderStyle}"
                     TickFrequency="2"
                     Value="{Binding ZoomLevel, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}">
                     <Slider.ToolTip>
                         <TextBlock>
                             Zoom<LineBreak />
-                            ● Drag to zoom</TextBlock>
+                            ● Mouse scroll wheel</TextBlock>
                     </Slider.ToolTip>
                 </Slider>
 
@@ -76,15 +78,15 @@
                     <Rectangle
                         x:Name="CrosshairVertical"
                         Width="2"
-                        Height="90"
+                        Height="80"
                         HorizontalAlignment="Center"
-                        Fill="{DynamicResource WindowBorder}" />
+                        Fill="{StaticResource WindowBorder}" />
                     <Rectangle
                         x:Name="CrosshairHorizontal"
-                        Width="90"
+                        Width="80"
                         Height="2"
                         VerticalAlignment="Center"
-                        Fill="{DynamicResource WindowBorder}" />
+                        Fill="{StaticResource WindowBorder}" />
                 </Grid>
             </Grid>
 
@@ -92,14 +94,13 @@
             <Rectangle
                 Grid.Column="1"
                 Width="2"
-                Fill="{DynamicResource WindowBorder}" />
+                Fill="{StaticResource WindowBorder}" />
 
             <!--  Color View  -->
             <Grid
                 x:Name="ColorView"
                 Grid.Column="2"
-                VerticalAlignment="Stretch"
-                MouseLeftButtonUp="ColorView_MouseLeftButtonUp">
+                VerticalAlignment="Stretch">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="auto" />
@@ -131,7 +132,7 @@
                         MouseLeftButtonUp="DropdownButton_Click">
                         <Border.ToolTip>
                             <TextBlock>
-                                Color menu<LineBreak />
+                                Format options<LineBreak />
                                 ● Right-click to open at mouse</TextBlock>
                         </Border.ToolTip>
                         <fa:ImageAwesome
@@ -139,7 +140,7 @@
                             Width="16"
                             Height="16"
                             Foreground="Black"
-                            Icon="Sliders" />
+                            Icon="ListUl" />
 
                         <Border.ContextMenu>
                             <ContextMenu x:Name="ColorTypeMenu" Style="{StaticResource ContextMenuStyle}">
@@ -202,7 +203,7 @@
                         MouseLeftButtonUp="CopyButton_Click">
                         <Border.ToolTip>
                             <TextBlock>
-                                Copy color to clipboard<LineBreak />
+                                Copy to clipboard<LineBreak />
                                 ● Ctrl+C to copy</TextBlock>
                         </Border.ToolTip>
                         <fa:ImageAwesome
@@ -261,17 +262,17 @@
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
                     Cursor="Hand"
-                    MouseLeftButtonUp="ToggleRunning_Click">
+                    MouseLeftButtonUp="ToggleEnabled_Click">
                     <Grid.ToolTip>
                         <TextBlock>
-                            Pause/resume<LineBreak />
-                            ● Left-click anywhere<LineBreak />
-                            ● Ctrl+Spacebar</TextBlock>
+                            Pause/Run<LineBreak />
+                            ● Spacebar<LineBreak />
+                            ● Custom hotkey</TextBlock>
                     </Grid.ToolTip>
 
                     <Border Width="18" Height="18">
                         <fa:ImageAwesome
-                            x:Name="IsRunningIcon"
+                            x:Name="IsEnabledIcon"
                             Width="18"
                             Height="18"
                             VerticalAlignment="Center"

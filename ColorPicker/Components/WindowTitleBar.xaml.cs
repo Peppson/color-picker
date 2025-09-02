@@ -1,45 +1,62 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using ColorPicker.Services;
+using ColorPicker.Settings;
 
 namespace ColorPicker.Components;
 
 public partial class WindowTitleBar : UserControl
 {
-    private ColorPicker _colorPicker = null!;
-    private Window _mainWindow = null!;
-
     public WindowTitleBar()
     {
         InitializeComponent();
-        Loaded += OnLoaded;
-    }
 
-    private void OnLoaded(object? sender, RoutedEventArgs e)
-    {   
-        _mainWindow = Window.GetWindow(this)!;
-        _mainWindow.Topmost = true;
-
-        // Grab ref to the ColorPicker
-        if (_mainWindow is MainWindow main) _colorPicker = main.ColorPicker;
+        #if !RELEASE
+        #pragma warning disable CS0162
+            if (Config.ShowDebugbutton)
+                DebugButton.Visibility = Visibility.Visible;
+                
+            if (Config.BootWithSettings)
+                Loaded += SettingsButton_Click;
+        #pragma warning restore CS0162
+        #endif
     }
 
     private void OnTopButton_Click(object sender, RoutedEventArgs e)
     {
-        _mainWindow.Topmost = !_mainWindow.Topmost;
-        DB.Print($"Window OnTop: {_mainWindow.Topmost}");
-
-        this.OnTopButtonIcon.Foreground = _mainWindow.Topmost ? // todo color?
-            (System.Windows.Media.Brush)Application.Current.Resources["PrimaryText"] : 
-            (System.Windows.Media.Brush)Application.Current.Resources["OnTopDisabled"];
+        State.MainWindow.Topmost = !State.MainWindow.Topmost;
+        OnTopButtonIcon.Foreground =
+            ColorService.GetIconColor(State.MainWindow.Topmost);
     }
-   
-    private void OnMinimizeButton_Click(object sender, RoutedEventArgs e) =>
-        _mainWindow.WindowState = WindowState.Minimized;
-	
-	private void OnCloseButton_Click(object sender, RoutedEventArgs e) => 
-        _mainWindow.Close();
 
-    private void DebugButton_Click(object sender, RoutedEventArgs e) => 
-        _colorPicker?.ToggleSampling();
+    public void SettingsButton_Click(object sender, RoutedEventArgs e)
+    {
+        State.IsSettingsOpen = !State.IsSettingsOpen;
+
+        if (State.IsSettingsOpen)
+        {
+            State.MainWindow.ColorPicker.DisableInput();
+            State.MainWindow.SettingsWindow.RefreshHotkeyInput();
+            State.MainWindow.ColorPicker.Visibility = Visibility.Collapsed;
+            State.MainWindow.SettingsWindow.Visibility = Visibility.Visible;
+        }
+        else
+        {
+            State.MainWindow.ColorPicker.EnableInput();
+            State.MainWindow.SettingsWindow.Reset();
+            State.MainWindow.ColorPicker.Visibility = Visibility.Visible;
+            State.MainWindow.SettingsWindow.Visibility = Visibility.Collapsed;
+        }
+    }
+
+    private void OnMinimizeButton_Click(object sender, RoutedEventArgs e) =>
+        State.MainWindow.WindowState = WindowState.Minimized;
+
+    private void OnCloseButton_Click(object sender, RoutedEventArgs e) =>
+        State.MainWindow.Close();
+
+    private void DebugButton_Click(object sender, RoutedEventArgs e)
+    {
+        State.ResetDebug();
+    }
 }

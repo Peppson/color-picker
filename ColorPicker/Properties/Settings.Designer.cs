@@ -49,13 +49,85 @@ namespace ColorPicker.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("HEX")]
         public string ColorType {
             get {
                 return ((string)(this["ColorType"]));
             }
             set {
                 this["ColorType"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool BootWithCaptureEnabled {
+            get {
+                return ((bool)(this["BootWithCaptureEnabled"]));
+            }
+            set {
+                this["BootWithCaptureEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool CaptureColorOnSelf {
+            get {
+                return ((bool)(this["CaptureColorOnSelf"]));
+            }
+            set {
+                this["CaptureColorOnSelf"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool IsFirstBoot {
+            get {
+                return ((bool)(this["IsFirstBoot"]));
+            }
+            set {
+                this["IsFirstBoot"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool SetWindowPosOnStartup {
+            get {
+                return ((bool)(this["SetWindowPosOnStartup"]));
+            }
+            set {
+                this["SetWindowPosOnStartup"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string GlobalHotkey {
+            get {
+                return ((string)(this["GlobalHotkey"]));
+            }
+            set {
+                this["GlobalHotkey"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool GlobalHotkeyEnabled {
+            get {
+                return ((bool)(this["GlobalHotkeyEnabled"]));
+            }
+            set {
+                this["GlobalHotkeyEnabled"] = value;
             }
         }
     }

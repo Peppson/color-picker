@@ -7,8 +7,8 @@
 
     <!--  Window border  -->
     <Style x:Key="WindowBorderStyle" TargetType="{x:Type Border}">
-        <Setter Property="BorderBrush" Value="{DynamicResource WindowBorder}" />
-        <Setter Property="BorderThickness" Value="2,1,2,2" />
+        <Setter Property="BorderBrush" Value="{StaticResource WindowBorder}" />
+        <Setter Property="BorderThickness" Value="2,0,2,2" />
         <Style.Triggers>
             <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=WindowState}" Value="Maximized">
                 <Setter Property="BorderThickness" Value="0" />
@@ -18,7 +18,7 @@
 
     <!--  Window Titlebar Buttons  -->
     <Style x:Key="TitleBarButtonStyle" TargetType="Button">
-        <Setter Property="Foreground" Value="{DynamicResource PrimaryText}" />
+        <Setter Property="Foreground" Value="{StaticResource PrimaryText}" />
         <Setter Property="Padding" Value="0" />
         <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
         <Setter Property="IsTabStop" Value="False" />
@@ -29,7 +29,6 @@
                         x:Name="border"
                         Background="Transparent"
                         BorderThickness="0"
-                        Cursor="Hand"
                         SnapsToDevicePixels="true">
                         <ContentPresenter
                             x:Name="contentPresenter"
@@ -42,10 +41,10 @@
 
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="true">
-                            <Setter TargetName="border" Property="Background" Value="{DynamicResource TitleBarButtonHover}" />
+                            <Setter TargetName="border" Property="Background" Value="{StaticResource TitleBarButtonHover}" />
                         </Trigger>
                         <Trigger Property="IsPressed" Value="true">
-                            <Setter TargetName="border" Property="Background" Value="{DynamicResource TitleBarButtonHover}" />
+                            <Setter TargetName="border" Property="Background" Value="{StaticResource TitleBarButtonHover}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -55,7 +54,7 @@
 
     <!--  Window Titlebar Button Close  -->
     <Style x:Key="TitleBarCloseButtonStyle" TargetType="Button">
-        <Setter Property="Foreground" Value="{DynamicResource PrimaryText}" />
+        <Setter Property="Foreground" Value="{StaticResource PrimaryText}" />
         <Setter Property="Padding" Value="0" />
         <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
         <Setter Property="IsTabStop" Value="False" />
@@ -66,7 +65,6 @@
                         x:Name="border"
                         Background="Transparent"
                         BorderThickness="0"
-                        Cursor="Hand"
                         SnapsToDevicePixels="true">
                         <ContentPresenter
                             x:Name="contentPresenter"
@@ -79,10 +77,10 @@
 
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="true">
-                            <Setter TargetName="border" Property="Background" Value="{DynamicResource TitleBarButtonCloseHover}" />
+                            <Setter TargetName="border" Property="Background" Value="{StaticResource TitleBarButtonCloseHover}" />
                         </Trigger>
                         <Trigger Property="IsPressed" Value="true">
-                            <Setter TargetName="border" Property="Background" Value="{DynamicResource TitleBarButtonCloseHover}" />
+                            <Setter TargetName="border" Property="Background" Value="{StaticResource TitleBarButtonCloseHover}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -112,11 +110,12 @@
                                     IsHitTestVisible="False" />
                             </Track.IncreaseRepeatButton>
                             <Track.Thumb>
-                                <Thumb Width="22" Height="11">
+                                <Thumb Width="11" Height="19">
                                     <Thumb.Template>
                                         <ControlTemplate TargetType="Thumb">
                                             <Border
                                                 x:Name="PART_ThumbBorder"
+                                                Background="Black"
                                                 BorderBrush="Transparent"
                                                 BorderThickness="1" />
                                         </ControlTemplate>
@@ -132,11 +131,11 @@
 
     <!--  ContextMenu Style  -->
     <Style x:Key="ContextMenuStyle" TargetType="ContextMenu">
-        <Setter Property="Background" Value="{DynamicResource WindowBackground}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource Border}" />
+        <Setter Property="Background" Value="{StaticResource WindowBackground}" />
+        <Setter Property="BorderBrush" Value="{StaticResource Border}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Padding" Value="4" />
-        <Setter Property="Width" Value="80" />
+        <Setter Property="Width" Value="90" />
         <Setter Property="HasDropShadow" Value="True" />
         <Setter Property="Template">
             <Setter.Value>
@@ -156,7 +155,7 @@
     <!--  MenuItem Style  -->
     <Style x:Key="MenuItemStyle" TargetType="MenuItem">
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Foreground" Value="{DynamicResource PrimaryText}" />
+        <Setter Property="Foreground" Value="{StaticResource PrimaryText}" />
         <Setter Property="Height" Value="30" />
         <Setter Property="Padding" Value="2" />
         <Setter Property="Template">
@@ -175,29 +174,30 @@
                             <!--  Checkmark  -->
                             <TextBlock
                                 Grid.Column="0"
-                                Margin="0,0,0,0"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 FontSize="15"
                                 FontWeight="Bold"
-                                Foreground="{DynamicResource PrimaryText}"
+                                Foreground="{StaticResource PrimaryText}"
                                 Text="✓"
                                 Visibility="{Binding IsChecked, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BoolToVisibilityConverter}}" />
 
                             <!--  Text  -->
                             <ContentPresenter
                                 Grid.Column="1"
+                                Margin="6,0,0,0"
                                 VerticalAlignment="Center"
                                 Content="{TemplateBinding Header}"
                                 TextBlock.Foreground="{TemplateBinding Foreground}" />
+
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsHighlighted" Value="True">
-                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource TitleBarButtonHover}" />
+                            <Setter TargetName="Border" Property="Background" Value="{StaticResource TitleBarButtonHover}" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Foreground" Value="{DynamicResource OnTopDisabled}" />
+                            <Setter Property="Foreground" Value="{StaticResource OnTopDisabled}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

@@ -3,7 +3,7 @@
 
 
 <!-- 
-# ColorGrab [![.NET](https://img.shields.io/badge/.NET-9.0-512BD4)](https://dotnet.microsoft.com/download) [![WPF](https://img.shields.io/badge/WPF-512BD4?logo=windows&logoColor=white)](https://learn.microsoft.com/dotnet/desktop/wpf/)  
+# ColorPick [![.NET](https://img.shields.io/badge/.NET-9.0-512BD4)](https://dotnet.microsoft.com/download) [![WPF](https://img.shields.io/badge/WPF-512BD4?logo=windows&logoColor=white)](https://learn.microsoft.com/dotnet/desktop/wpf/)  
 
 Lightweight color picker that grabs any pixel color from the mouse cursor.  
 View and copy color codes in `HEX`, `RGB`, `HSV`, `HSL` and `CMYK`, with zoom view for precise selection.  
@@ -44,9 +44,9 @@ dotnet run -c Release
 ```
 
 ### Considerations
-- Should it capture its own window colors? _(currently off)_
 - Auto-copy last capture to clipboard?
-- Option to change global hotkey? _(Windows hook)_
+- Keep sampling active with no mouse movement, to capture say a video?
+- WPF is hard-capped at 60 FPS, such a shame...
 
 <br>
 
