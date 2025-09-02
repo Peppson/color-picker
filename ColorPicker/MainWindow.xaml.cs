@@ -50,6 +50,7 @@ public partial class MainWindow : Window
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
         IsFirstBootWindow();
+        State.UpdateMainWindowPos();
     }
 
     private void OnWindowStateChanged(object? sender, EventArgs e)

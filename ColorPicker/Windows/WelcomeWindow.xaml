@@ -16,6 +16,7 @@
     FontFamily="Consolas"
     FontSize="13"
     ResizeMode="NoResize"
+    SnapsToDevicePixels="True"
     WindowStartupLocation="CenterOwner"
     WindowState="Normal"
     WindowStyle="None"
@@ -91,7 +92,7 @@
                         FontSize="18"
                         FontWeight="bold"
                         Foreground="{StaticResource PrimaryText}"
-                        Text="Overview" />
+                        Text="Get Started" />
                     <TextBlock
                         HorizontalAlignment="Right"
                         VerticalAlignment="Bottom"

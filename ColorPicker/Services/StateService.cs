@@ -70,12 +70,21 @@ public static class State
     }
 
     public static void UpdateMainWindowPos()
-    {
+    {   
+        if (!MainWindow.IsLoaded)
+        {
+            Console.WriteLine("MainWindow not loaded yet - skipping UpdateMainWindowPos");
+            return;
+        }
+
+        var topLeft = MainWindow.PointToScreen(new Point(0, 0));
+        var bottomRight = MainWindow.PointToScreen(new Point(MainWindow.ActualWidth, MainWindow.ActualHeight));
+        
         MainWindowPos = new System.Drawing.Rectangle(
-            (int)MainWindow.Left,
-            (int)MainWindow.Top,
-            (int)MainWindow.Width,
-            (int)MainWindow.Height
+            (int)topLeft.X,
+            (int)topLeft.Y,
+            (int)(bottomRight.X - topLeft.X),
+            (int)(bottomRight.Y - topLeft.Y)
         );
     }
 

@@ -6,9 +6,10 @@
     xmlns:svc="clr-namespace:ColorPicker.Services"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     StartupUri="MainWindow.xaml">
-
+    
     <Application.Resources>
         <ResourceDictionary>
+            
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Settings/Colors.xaml" />
                 <ResourceDictionary Source="Settings/Styles.xaml" />
@@ -16,7 +17,7 @@
 
             <svc:EnumToBoolConverter x:Key="EnumToBoolConverter" />
             <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-            
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

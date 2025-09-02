@@ -12,6 +12,7 @@
     MinWidth="400"
     MinHeight="200"
     AllowsTransparency="True"
+    Background="{StaticResource WindowBorder}"
     FontFamily="Consolas"
     Icon="pack://application:,,,/Assets/FullSizeIcon_32.ico"
     ResizeMode="CanResizeWithGrip"
