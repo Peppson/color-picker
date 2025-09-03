@@ -10,4 +10,3 @@ welcomepage? - toggled of atm
 
 Readme
 msstore?
-pipeline?

@@ -41,7 +41,7 @@
                 Margin="12,10,0,0"
                 VerticalContentAlignment="Center"
                 BorderBrush="{StaticResource Border}"
-                Content="Include ColorPick in color capture"
+                Content="Include ColorGrab in color capture"
                 Foreground="{StaticResource PrimaryText}"
                 IsChecked="{Binding CaptureOnSelf, Mode=TwoWay}" />
 
