@@ -136,7 +136,7 @@
             </Grid>
 
             <!--  Github  -->
-            <!-- 
+            <!--
             <StackPanel
                 Grid.Row="5"
                 Margin="10,2,0,10"
@@ -157,7 +157,7 @@
                     IsReadOnly="True"
                     Text="{x:Static config:Config.GithubLink}" />
             </StackPanel>
-            TODO -->
+            TODO-->
 
             <!--  Button  -->
             <StackPanel

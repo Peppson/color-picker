@@ -50,4 +50,7 @@ dotnet run -c Release
 
 <br>
 
+<a href='//www.microsoft.com/store/apps/9N5MVVBD0TGW?cid=storebadge&ocid=badge'><img src='https://developer.microsoft.com/store/badges/images/English_get-it-from-MS.png' alt='English badge' height='50px'/></a>
+
+
  -->

@@ -223,37 +223,12 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         }
     }
 
-
-
-// todo
-    int counter = 0;
-    double sum = 0;
-
     private void UpdateZoomView(POINT p, int zoom)
     {
         var invertedZoom = Math.Clamp(100 - zoom, 1, 100);
-
-        // todo
-        var stopwatch = Stopwatch.StartNew();
-
-
-
+        //Profiler.Start(200);
         ZoomView.Source = ScreenCaptureService.GetRegion(p.X, p.Y, invertedZoom, invertedZoom);
-        
-
-
-
-        stopwatch.Stop();
-        sum += stopwatch.Elapsed.TotalMilliseconds;
-        counter++;
-
-        if (counter >= 50)
-        {
-            var avg = sum / counter;
-            Console.WriteLine($"Frames {counter}. AVG {avg:F2} ms");
-            counter = 0;
-            sum = 0;
-        }
+        //Profiler.Stop();
     }
 
     private void UpdateColors(POINT p)

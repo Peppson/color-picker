@@ -2,10 +2,15 @@
 dotnet publish -c Release -r win-x64 --self-contained true -o "$HOME/Desktop"
 
 
-Stopwatch class?
-faster capture + render?
+Capture using gpu instead?
+5ms - desktop 200 samples
+4ms - inlined desktop 200 samples
+
+
+
 keybind input field colors 
 settings button same as welcome
+
 
 welcomepage?
 
