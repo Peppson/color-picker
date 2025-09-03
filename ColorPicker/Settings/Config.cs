@@ -11,7 +11,7 @@ public static class Config
     // Debug
     public const bool ShowDebugbutton = false;
     public const bool BootWithSettings = false;
-    public const bool BootWithWelcomeWindow = true;
+    public const bool BootWithWelcomeWindow = false;
 
     // Constants
     public const int MaxSamplesPerSecond = 120;

@@ -23,11 +23,24 @@ public class SettingsViewModel : INotifyPropertyChanged
         }
     }
 
+    public bool SetZoomLevelOnStartup
+    {
+        get => State.SetZoomLevelOnStartup;
+        set
+        {
+            if (State.SetZoomLevelOnStartup != value)
+            {
+                State.SetZoomLevelOnStartup = value;
+                OnPropertyChanged(nameof(SetZoomLevelOnStartup));
+            }
+        }
+    }
+
     public bool CaptureOnSelf
     {
         get => State.CaptureOnSelf;
         set
-        { 
+        {
             if (State.CaptureOnSelf != value)
             {
                 State.CaptureOnSelf = value;

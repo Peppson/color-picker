@@ -59,7 +59,8 @@ public partial class MainWindow : Window
             IsFirstBootWindow();
         }
         #pragma warning restore CS0162
-
+        
+        State.IsFirstBoot = false;
         State.UpdateMainWindowPos();
     }
 

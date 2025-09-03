@@ -76,6 +76,9 @@
                 </Button>
             </Grid>
 
+
+
+
             <!--  Window  -->
             <Grid Grid.Row="1" Background="{StaticResource SettingsBackground}">
                 <Grid.RowDefinitions>
@@ -106,133 +109,7 @@
                     Margin="30,22,30,0"
                     Background="{StaticResource Border}" />
 
-                <!--  Image  -->
-                <Grid Grid.Row="1" Margin="0,-20,0,0">
 
-                    <Image
-                        Width="510"
-                        Height="310"
-                        Margin="0,0,0,15"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Panel.ZIndex="1"
-                        Source="/Assets/WelcomePic.png" />
-
-                    <!--  Lines and text  -->
-                    <Grid Panel.ZIndex="2" IsHitTestVisible="False">
-
-                        <!--  Settings  -->
-                        <TextBlock
-                            Margin="290,33,278,315"
-                            Foreground="{StaticResource PrimaryText}"
-                            Text="Settings" />
-                        <Rectangle
-                            Width="24"
-                            Height="1"
-                            Margin="367,64,245,301"
-                            Fill="{StaticResource PrimaryText}">
-                            <Rectangle.RenderTransform>
-                                <RotateTransform Angle="225" CenterX="0" CenterY="0.5" />
-                            </Rectangle.RenderTransform>
-                        </Rectangle>
-
-                        <!--  Ontop  -->
-                        <TextBlock
-                            Margin="448,33,14,309"
-                            Foreground="{StaticResource PrimaryText}"
-                            Text="Window ontop" />
-                        <Rectangle
-                            Width="24"
-                            Height="1"
-                            Margin="444,47,168,318"
-                            Fill="{StaticResource PrimaryText}">
-                            <Rectangle.RenderTransform>
-                                <RotateTransform Angle="135" CenterX="0" CenterY="0.5" />
-                            </Rectangle.RenderTransform>
-                        </Rectangle>
-
-                        <!--  Format  -->
-                        <TextBlock
-                            Margin="151,33,373,316"
-                            Foreground="{StaticResource PrimaryText}"
-                            Text="Format options" />
-                        <Rectangle
-                            Width="60"
-                            Height="1"
-                            Margin="298,90,278,275"
-                            Fill="{StaticResource PrimaryText}">
-                            <Rectangle.RenderTransform>
-                                <RotateTransform Angle="225" CenterX="0" CenterY="0.5" />
-                            </Rectangle.RenderTransform>
-                        </Rectangle>
-
-                        <!--  Zoom  -->
-                        <TextBlock
-                            Margin="61,61,526,284"
-                            Foreground="{StaticResource PrimaryText}"
-                            Text="Zoom" />
-                        <Rectangle
-                            Width="24"
-                            Height="1"
-                            Margin="112,92,500,273"
-                            Fill="{StaticResource PrimaryText}">
-                            <Rectangle.RenderTransform>
-                                <RotateTransform Angle="225" CenterX="0" CenterY="0.5" />
-                            </Rectangle.RenderTransform>
-                        </Rectangle>
-
-                        <!--  Slider  -->
-                        <TextBlock
-                            Margin="38,301,499,45"
-                            Foreground="{StaticResource PrimaryText}"
-                            Text="Adjust zoom" />
-                        <Rectangle
-                            Width="24"
-                            Height="1"
-                            Margin="138,285,474,80"
-                            Fill="{StaticResource PrimaryText}">
-                            <Rectangle.RenderTransform>
-                                <RotateTransform Angle="135" CenterX="0" CenterY="0.5" />
-                            </Rectangle.RenderTransform>
-                        </Rectangle>
-
-                        <!--  Pause/Run  -->
-                        <TextBlock
-                            Margin="339,301,226,45"
-                            Foreground="{StaticResource PrimaryText}"
-                            Text="Pause/Run" />
-                        <Rectangle
-                            Width="24"
-                            Height="1"
-                            Margin="316,285,296,80"
-                            Fill="{StaticResource PrimaryText}">
-                            <Rectangle.RenderTransform>
-                                <RotateTransform Angle="45" CenterX="0" CenterY="0.5" />
-                            </Rectangle.RenderTransform>
-                        </Rectangle>
-
-                        <!--  Copy  -->
-                        <TextBlock
-                            Margin="544,131,22,215"
-                            Foreground="{StaticResource PrimaryText}"
-                            Text="Copy" />
-                        <Rectangle
-                            Width="24"
-                            Height="1"
-                            Margin="522,114,90,251"
-                            Fill="{StaticResource PrimaryText}">
-                            <Rectangle.RenderTransform>
-                                <RotateTransform Angle="45" CenterX="0" CenterY="0.5" />
-                            </Rectangle.RenderTransform>
-                        </Rectangle>
-                    </Grid>
-                </Grid>
-
-                <Separator
-                    Grid.Row="1"
-                    Height="1"
-                    Margin="30,300,30,0"
-                    Background="{StaticResource Border}" />
 
 
                 <Button
@@ -252,7 +129,7 @@
 
                     <Button.Style>
                         <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
-                            <Setter Property="Background" Value="{StaticResource LogoBlue}" />
+                            <Setter Property="Background" Value="{StaticResource LogoGreen}" />
                             <Setter Property="Foreground" Value="{StaticResource PrimaryText}" />
 
                             <Setter Property="Template">

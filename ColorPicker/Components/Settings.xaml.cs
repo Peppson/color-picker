@@ -32,12 +32,16 @@ public partial class Settings : UserControl
 
     private void KeybindInput_GotFocus(object sender, RoutedEventArgs e)
     {
+        KeybindInput.BorderBrush = (System.Windows.Media.Brush)FindResource("LogoBlue");
+
         if (!string.IsNullOrWhiteSpace(State.GlobalHotkey))
             GlobalHotkeyManager.UnRegister(State.MainWindow);
     }
 
     private void KeybindInput_LostFocus(object sender, RoutedEventArgs e)
-    {
+    {   
+        KeybindInput.BorderBrush = System.Windows.Media.Brushes.Black;
+
         if (!string.IsNullOrWhiteSpace(State.GlobalHotkey))
             _ = GlobalHotkeyManager.Register(State.MainWindow, State.GlobalHotkey);
 

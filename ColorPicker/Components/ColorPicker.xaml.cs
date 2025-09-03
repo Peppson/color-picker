@@ -51,9 +51,14 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
 
     private void OnLoaded(object? sender, RoutedEventArgs e)
     {
+        // Spagetthi
         CurrentColorType = State.CurrentColorType;
-        EnableInput();
+        
+        ZoomLevel = State.SetZoomLevelOnStartup
+            ? State.ZoomLevel 
+            : Config.InitialZoomLevel;
 
+        EnableInput();
         RegisterSliderParts();
         SetIsEnabledIcon(State.IsEnabled);
         UpdateColorsStatic();

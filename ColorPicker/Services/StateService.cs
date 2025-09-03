@@ -11,6 +11,7 @@ public static class State
     public static string? GlobalHotkey { get; set; }
     public static bool GlobalHotkeyEnabled { get; set; }
     public static bool SetWindowPosOnStartup { get; set; }
+    public static bool SetZoomLevelOnStartup { get; set; }
     public static bool BootWithCaptureEnabled { get; set; }
     public static bool CaptureOnSelf { get; set; }
     public static ColorTypes CurrentColorType { get; set; }
@@ -19,6 +20,7 @@ public static class State
 
     // Runtime
     public static bool IsEnabled { get; set; }
+    public static int ZoomLevel  { get; set; }
     public static bool IsMinimized { get; set; } = false;
     public static bool IsSettingsOpen { get; set; } = false;
     public static bool IsDraggingOrResizing { get; set; } = false;
@@ -48,9 +50,13 @@ public static class State
         BootWithCaptureEnabled = Properties.Settings.Default.BootWithCaptureEnabled;
         CaptureOnSelf = Properties.Settings.Default.CaptureColorOnSelf;
         SetWindowPosOnStartup = Properties.Settings.Default.SetWindowPosOnStartup;
+        SetZoomLevelOnStartup = Properties.Settings.Default.SetZoomLevelOnStartup;
+        ZoomLevel = Properties.Settings.Default.ZoomLevel; 
         CurrentColorType = ColorService.StringToColorType(Properties.Settings.Default.ColorType);
 
         IsEnabled = BootWithCaptureEnabled;
+
+        Console.WriteLine($"isenabled: {IsEnabled}");
     }
 
     public static void Save()
@@ -65,7 +71,11 @@ public static class State
         Properties.Settings.Default.BootWithCaptureEnabled = BootWithCaptureEnabled;
         Properties.Settings.Default.CaptureColorOnSelf = CaptureOnSelf;
         Properties.Settings.Default.SetWindowPosOnStartup = SetWindowPosOnStartup;
+        Properties.Settings.Default.SetZoomLevelOnStartup = SetZoomLevelOnStartup;
+        Properties.Settings.Default.ZoomLevel = ZoomLevel;
         Properties.Settings.Default.ColorType = CurrentColorType.ToString();
+
+        Console.WriteLine($"bootwithcaptureenabled: {BootWithCaptureEnabled}");
 
         Properties.Settings.Default.Save();
     }
@@ -106,6 +116,8 @@ public static class State
         Console.WriteLine($"- IsEnabled: {IsEnabled} (override = {Config.IsEnabledOverride.HasValue})");
         Console.WriteLine($"- BootWithCaptureEnabled: {BootWithCaptureEnabled}");
         Console.WriteLine($"- SetWindowPosOnStartup: {SetWindowPosOnStartup}");
+        Console.WriteLine($"- SetZoomLevelOnStartup: {SetZoomLevelOnStartup}");
+        Console.WriteLine($"- ZoomLevel: {ZoomLevel}");
         Console.WriteLine($"- CaptureOnSelf: {CaptureOnSelf}");
         Console.WriteLine($"- WindowTop: {WindowTop}");
         Console.WriteLine($"- WindowLeft: {WindowLeft}");
