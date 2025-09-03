@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Interop;
+using System.Windows.Threading;
 using ColorPicker.Services;
 using ColorPicker.Settings;
 
@@ -7,8 +8,9 @@ namespace ColorPicker;
 
 public partial class MainWindow : Window
 {   
+    private readonly DispatcherTimer _dragTimer = new();
+    
     internal Components.Settings? _settingsWindow;
-
     public Components.Settings SettingsWindow
     {
         get
@@ -48,8 +50,18 @@ public partial class MainWindow : Window
     }
 
     private void OnLoaded(object sender, RoutedEventArgs e)
-    {
-        IsFirstBootWindow();
+    {   
+        SetupWindowDragTimer();
+        
+        #pragma warning disable CS0162
+        if (Config.IsWelcomeWindowEnabled)
+        {
+            IsFirstBootWindow();
+        }
+        #pragma warning restore CS0162
+        
+        State.IsFirstBoot = false;
+        State.UpdateMainWindowPos();
     }
 
     private void OnWindowStateChanged(object? sender, EventArgs e)
@@ -59,6 +71,9 @@ public partial class MainWindow : Window
 
     private void OnWindowSizeOrLocationChanged(object? sender, EventArgs e)
     {
+        State.IsDraggingOrResizing = true;
+        _dragTimer.Stop();
+        _dragTimer.Start();
         State.UpdateMainWindowPos();
     }
 
@@ -91,6 +106,16 @@ public partial class MainWindow : Window
 
         welcomeWindow.ShowDialog();
         State.IsEnabled = true;
+    }
+
+    private void SetupWindowDragTimer()
+    {
+        _dragTimer.Interval = TimeSpan.FromMilliseconds(25);
+        _dragTimer.Tick += (s, e) =>
+        {
+            _dragTimer.Stop();
+            State.IsDraggingOrResizing = false;
+        };
     }
 
     private IntPtr PreventMaximize(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)

@@ -32,14 +32,14 @@ View and copy color codes in `HEX`, `RGB`, `HSV`, `HSL` and `CMYK`, with zoom vi
 #### Build from source
 ```bash
 git clone "https://github.com/Peppson/color-picker.git"
-cd "color-picker"
+cd "colorPicker"
 dotnet publish -c Release -r win-x64 --self-contained true -o "$HOME/Desktop"
 ```
 
 #### Run locally
 ```bash
 git clone "https://github.com/Peppson/color-picker.git"
-cd "color-picker"
+cd "colorPicker"
 dotnet run -c Release 
 ```
 
@@ -49,5 +49,8 @@ dotnet run -c Release
 - WPF is hard-capped at 60 FPS, such a shame...
 
 <br>
+
+<a href='//www.microsoft.com/store/apps/9N5MVVBD0TGW?cid=storebadge&ocid=badge'><img src='https://developer.microsoft.com/store/badges/images/English_get-it-from-MS.png' alt='English badge' height='50px'/></a>
+
 
  -->

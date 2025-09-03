@@ -130,5 +130,29 @@ namespace ColorPicker.Properties {
                 this["GlobalHotkeyEnabled"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SetZoomLevelOnStartup {
+            get {
+                return ((bool)(this["SetZoomLevelOnStartup"]));
+            }
+            set {
+                this["SetZoomLevelOnStartup"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("19")]
+        public int ZoomLevel {
+            get {
+                return ((int)(this["ZoomLevel"]));
+            }
+            set {
+                this["ZoomLevel"] = value;
+            }
+        }
     }
 }

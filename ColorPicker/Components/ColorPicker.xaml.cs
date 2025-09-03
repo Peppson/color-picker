@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -28,7 +29,8 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         // Clamp max fps, WPF framerates is wonky sometimes...
         const int minInterval = 1000 / Config.MaxSamplesPerSecond;
 
-        if (!State.IsEnabled || State.IsMinimized) return;
+        if (!State.IsEnabled || State.IsMinimized || State.IsDraggingOrResizing)
+            return;
 
         if (DateTime.UtcNow < _lastUpdate.AddMilliseconds(minInterval))
             return;
@@ -49,9 +51,14 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
 
     private void OnLoaded(object? sender, RoutedEventArgs e)
     {
+        // Spagetthi
         CurrentColorType = State.CurrentColorType;
-        EnableInput();
+        
+        ZoomLevel = State.SetZoomLevelOnStartup
+            ? State.ZoomLevel 
+            : Config.InitialZoomLevel;
 
+        EnableInput();
         RegisterSliderParts();
         SetIsEnabledIcon(State.IsEnabled);
         UpdateColorsStatic();
@@ -117,15 +124,26 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         }
 
         // Spacebar 
-        else if (e.Key == Key.Space)
+        if (e.Key == Key.Space)
         {
             ToggleIsEnabled();
             e.Handled = true;
             return;
         }
-        
+
         // Arrow keys
-        else if (e.Key == Key.Left)
+        HandleArrowKeyMovement(sender, e);
+
+        UpdateColors(_lastMousePos);
+        e.Handled = true;
+    }
+
+    private void HandleArrowKeyMovement(object sender, KeyEventArgs e)
+    {   
+        // Only allow arrowkeys after capture
+        if (State.IsEnabled) return;
+
+        if (e.Key == Key.Left)
             _lastMousePos.X--;
         else if (e.Key == Key.Right)
             _lastMousePos.X++;
@@ -133,9 +151,6 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
             _lastMousePos.Y--;
         else if (e.Key == Key.Down)
             _lastMousePos.Y++;
-
-        UpdateColors(_lastMousePos);
-        e.Handled = true;
     }
 
     private void ZoomView_MouseWheel(object sender, MouseWheelEventArgs e)
@@ -154,12 +169,14 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
     {
         State.IsEnabled = !State.IsEnabled;
         SetIsEnabledIcon(State.IsEnabled);
+        OnPropertyChanged(nameof(IsEnabledProxy));
     }
 
     public void SetIsEnabled(bool enabled)
     {
         State.IsEnabled = enabled;
         SetIsEnabledIcon(State.IsEnabled);
+        OnPropertyChanged(nameof(IsEnabledProxy));
     }
 
     private void SetIsEnabledIcon(bool running)
@@ -168,7 +185,10 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
     }
 
     private void ZoomView_MouseDown(object sender, MouseButtonEventArgs e)
-    {
+    {   
+        // Only allow dragging after capture
+        if (State.IsEnabled) return;
+        
         if (e.LeftButton == MouseButtonState.Pressed)
         {
             _isDragging = true;
@@ -211,7 +231,9 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
     private void UpdateZoomView(POINT p, int zoom)
     {
         var invertedZoom = Math.Clamp(100 - zoom, 1, 100);
+        //Profiler.Start(200);
         ZoomView.Source = ScreenCaptureService.GetRegion(p.X, p.Y, invertedZoom, invertedZoom);
+        //Profiler.Stop();
     }
 
     private void UpdateColors(POINT p)

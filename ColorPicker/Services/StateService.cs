@@ -11,6 +11,7 @@ public static class State
     public static string? GlobalHotkey { get; set; }
     public static bool GlobalHotkeyEnabled { get; set; }
     public static bool SetWindowPosOnStartup { get; set; }
+    public static bool SetZoomLevelOnStartup { get; set; }
     public static bool BootWithCaptureEnabled { get; set; }
     public static bool CaptureOnSelf { get; set; }
     public static ColorTypes CurrentColorType { get; set; }
@@ -19,8 +20,10 @@ public static class State
 
     // Runtime
     public static bool IsEnabled { get; set; }
-    public static bool IsMinimized { get; set; } = Config.InitialIsMinimized;
+    public static int ZoomLevel  { get; set; }
+    public static bool IsMinimized { get; set; } = false;
     public static bool IsSettingsOpen { get; set; } = false;
+    public static bool IsDraggingOrResizing { get; set; } = false;
     public static MainWindow MainWindow { get; private set; } = null!;
     public static System.Drawing.Rectangle MainWindowPos { get; private set; }
 
@@ -33,7 +36,7 @@ public static class State
 
         #if !RELEASE
             if (Config.IsEnabledOverride != null) IsEnabled = Config.IsEnabledOverride.Value;
-            DebugStartupLog();
+            StartupLogDebug();
         #endif
     }
 
@@ -47,9 +50,13 @@ public static class State
         BootWithCaptureEnabled = Properties.Settings.Default.BootWithCaptureEnabled;
         CaptureOnSelf = Properties.Settings.Default.CaptureColorOnSelf;
         SetWindowPosOnStartup = Properties.Settings.Default.SetWindowPosOnStartup;
+        SetZoomLevelOnStartup = Properties.Settings.Default.SetZoomLevelOnStartup;
+        ZoomLevel = Properties.Settings.Default.ZoomLevel; 
         CurrentColorType = ColorService.StringToColorType(Properties.Settings.Default.ColorType);
 
         IsEnabled = BootWithCaptureEnabled;
+
+        Console.WriteLine($"isenabled: {IsEnabled}");
     }
 
     public static void Save()
@@ -64,18 +71,28 @@ public static class State
         Properties.Settings.Default.BootWithCaptureEnabled = BootWithCaptureEnabled;
         Properties.Settings.Default.CaptureColorOnSelf = CaptureOnSelf;
         Properties.Settings.Default.SetWindowPosOnStartup = SetWindowPosOnStartup;
+        Properties.Settings.Default.SetZoomLevelOnStartup = SetZoomLevelOnStartup;
+        Properties.Settings.Default.ZoomLevel = ZoomLevel;
         Properties.Settings.Default.ColorType = CurrentColorType.ToString();
+
+        Console.WriteLine($"bootwithcaptureenabled: {BootWithCaptureEnabled}");
 
         Properties.Settings.Default.Save();
     }
 
     public static void UpdateMainWindowPos()
-    {
+    {   
+        if (!MainWindow.IsLoaded) return;
+        
+        // DPI aware position
+        var topLeft = MainWindow.PointToScreen(new Point(0, 0));
+        var bottomRight = MainWindow.PointToScreen(new Point(MainWindow.ActualWidth, MainWindow.ActualHeight));
+        
         MainWindowPos = new System.Drawing.Rectangle(
-            (int)MainWindow.Left,
-            (int)MainWindow.Top,
-            (int)MainWindow.Width,
-            (int)MainWindow.Height
+            (int)topLeft.X,
+            (int)topLeft.Y,
+            (int)(bottomRight.X - topLeft.X),
+            (int)(bottomRight.Y - topLeft.Y)
         );
     }
 
@@ -92,13 +109,15 @@ public static class State
         Application.Current.Shutdown();
     }
 
-    private static void DebugStartupLog()
+    private static void StartupLogDebug()
     {
         Console.WriteLine($"\n--- {Config.VersionNumber} ---");
         Console.WriteLine($"- IsFirstBoot: {IsFirstBoot}");
         Console.WriteLine($"- IsEnabled: {IsEnabled} (override = {Config.IsEnabledOverride.HasValue})");
         Console.WriteLine($"- BootWithCaptureEnabled: {BootWithCaptureEnabled}");
         Console.WriteLine($"- SetWindowPosOnStartup: {SetWindowPosOnStartup}");
+        Console.WriteLine($"- SetZoomLevelOnStartup: {SetZoomLevelOnStartup}");
+        Console.WriteLine($"- ZoomLevel: {ZoomLevel}");
         Console.WriteLine($"- CaptureOnSelf: {CaptureOnSelf}");
         Console.WriteLine($"- WindowTop: {WindowTop}");
         Console.WriteLine($"- WindowLeft: {WindowLeft}");

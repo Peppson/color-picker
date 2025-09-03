@@ -18,21 +18,7 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
     }
 
     // Props
-    private int _zoomLevel = Config.InitialZoomLevel;
-    public int ZoomLevel
-    {
-        get => _zoomLevel;
-        set
-        {
-            if (_zoomLevel != value)
-            {
-                _zoomLevel = value;
-                OnPropertyChanged(nameof(ZoomLevel));
-                OnPropertyChanged(nameof(ZoomPercent));
-                UpdateZoomView(_lastMousePos, _zoomLevel);
-            }
-        }
-    }
+    public bool IsEnabledProxy => State.IsEnabled;
 
     private ColorTypes _colorType;
     public ColorTypes CurrentColorType // HEX, RGB...
@@ -49,8 +35,27 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         }
     }
 
+    private int _zoomLevel = Config.InitialZoomLevel;
+    public int ZoomLevel
+    {
+        get => _zoomLevel;
+        set
+        {
+            if (_zoomLevel != value)
+            {
+                _zoomLevel = value;
+                State.ZoomLevel = value;
+                OnPropertyChanged(nameof(ZoomLevel));
+                OnPropertyChanged(nameof(ZoomPercent));
+                UpdateZoomView(_lastMousePos, _zoomLevel);
+            }
+        }
+    }
+
     public int ZoomPercent =>
         (_zoomLevel - (int)Config.MinZoomLevel) * 100 / ((int)Config.MaxZoomLevel - (int)Config.MinZoomLevel); // Ugly af
+
+
     public Border? Slider_1 { get; set; }
     public RepeatButton? Slider_2 { get; set; }
     public RepeatButton? Slider_3 { get; set; }

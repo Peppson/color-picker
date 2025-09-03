@@ -10,6 +10,7 @@
     <UseWPF>true</UseWPF>
     <Platforms>AnyCPU;x64</Platforms>
     <ApplicationIcon>Assets\FullSizeIcon_32.ico</ApplicationIcon>
+	  <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
 
 
@@ -17,7 +18,7 @@
   <PropertyGroup>
     <Version>$(AppVersion)</Version>                            <!-- Global version -->
     <FileVersion>$(AppVersion).0</FileVersion>                  <!-- File properties -->
-    <AssemblyVersion>$(AppVersion).0</AssemblyVersion>          <!-- Needed? -->  <!-- Internal use -->
+    <AssemblyVersion>$(AppVersion).0</AssemblyVersion>          <!-- Needed? -->
   </PropertyGroup>
 
 
@@ -63,7 +64,6 @@
 
   <PropertyGroup>
     <NoWarn>$(NoWarn);NU1701</NoWarn>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
 
   <ItemGroup>
