@@ -19,8 +19,9 @@ public static class State
 
     // Runtime
     public static bool IsEnabled { get; set; }
-    public static bool IsMinimized { get; set; } = Config.InitialIsMinimized;
+    public static bool IsMinimized { get; set; } = false;
     public static bool IsSettingsOpen { get; set; } = false;
+    public static bool IsDraggingOrResizing { get; set; } = false;
     public static MainWindow MainWindow { get; private set; } = null!;
     public static System.Drawing.Rectangle MainWindowPos { get; private set; }
 
@@ -33,7 +34,7 @@ public static class State
 
         #if !RELEASE
             if (Config.IsEnabledOverride != null) IsEnabled = Config.IsEnabledOverride.Value;
-            DebugStartupLog();
+            StartupLogDebug();
         #endif
     }
 
@@ -98,7 +99,7 @@ public static class State
         Application.Current.Shutdown();
     }
 
-    private static void DebugStartupLog()
+    private static void StartupLogDebug()
     {
         Console.WriteLine($"\n--- {Config.VersionNumber} ---");
         Console.WriteLine($"- IsFirstBoot: {IsFirstBoot}");

@@ -28,6 +28,7 @@
 
             <!--  Zoom View  -->
             <Grid
+                x:Name="ZoomViewGrid"
                 Grid.Column="0"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"

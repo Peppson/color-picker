@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -28,7 +29,8 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         // Clamp max fps, WPF framerates is wonky sometimes...
         const int minInterval = 1000 / Config.MaxSamplesPerSecond;
 
-        if (!State.IsEnabled || State.IsMinimized) return;
+        if (!State.IsEnabled || State.IsMinimized || State.IsDraggingOrResizing)
+            return;
 
         if (DateTime.UtcNow < _lastUpdate.AddMilliseconds(minInterval))
             return;
@@ -221,10 +223,37 @@ public partial class ColorPicker : UserControl, INotifyPropertyChanged
         }
     }
 
+
+
+// todo
+    int counter = 0;
+    double sum = 0;
+
     private void UpdateZoomView(POINT p, int zoom)
     {
         var invertedZoom = Math.Clamp(100 - zoom, 1, 100);
+
+        // todo
+        var stopwatch = Stopwatch.StartNew();
+
+
+
         ZoomView.Source = ScreenCaptureService.GetRegion(p.X, p.Y, invertedZoom, invertedZoom);
+        
+
+
+
+        stopwatch.Stop();
+        sum += stopwatch.Elapsed.TotalMilliseconds;
+        counter++;
+
+        if (counter >= 50)
+        {
+            var avg = sum / counter;
+            Console.WriteLine($"Frames {counter}. AVG {avg:F2} ms");
+            counter = 0;
+            sum = 0;
+        }
     }
 
     private void UpdateColors(POINT p)
