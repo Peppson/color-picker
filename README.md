@@ -1,35 +1,36 @@
-# Under construction...
-![App1](/Images/1.png) 
 
-
-<!-- 
 # ColorGrab [![.NET](https://img.shields.io/badge/.NET-9.0-512BD4)](https://dotnet.microsoft.com/download) [![WPF](https://img.shields.io/badge/WPF-512BD4?logo=windows&logoColor=white)](https://learn.microsoft.com/dotnet/desktop/wpf/)  
 
-Lightweight color picker that grabs any pixel color from the mouse cursor.  
-View and copy color codes in `HEX`, `RGB`, `HSV`, `HSL` and `CMYK`, with zoom view for precise selection.  
+Lightweight desktop color picker that grabs any pixel color from the mouse cursor.  
+View and copy colors in `HEX`,`RGB`,`HSV`,`HSL` and `CMYK` formats, with zoom view for precise selection.  
 
-![App1](/Images/1.png)  
+![App1](/Images/Screenshots/App.png)  
 
-![App2](/Images/2.png)
 
 ## Features
-- View and copy color codes in different formats
+- View and copy colors in different formats
 - Select exact pixel in `Zoomview` with mouse or keyboard post-capture
-- Global hotkey to start/pause capture _(currently hardcoded to `CTRL+Spacebar`)_
+- Global hotkey to start/stop capture
 - Window always-on-top toggle
-- Intuitive, easy-to-use UI
-- Restore program state on reboot  
+- Intuitive, easy-to-use UI _(I hope...)_
+- Persistent user settings
+
 
 ## Installation 
 
 #### Requirements:
-- Windows only
-- [.NET 9.0](https://dotnet.microsoft.com/en-us/download/dotnet) if running locally    
+- Windows
+- [.NET 9.0](https://dotnet.microsoft.com/en-us/download/dotnet) _(if running locally)_    
+
+<!-- 
+#### Microsoft Store
+- Link here TODO
+-->
   
 #### Download .exe
-- Download the latest release from the [Releases](#) page  
+- Download the latest release from the [Releases](https://github.com/Peppson/color-picker/releases) page  
 
-#### Build from source
+#### Build .exe from source
 ```bash
 git clone "https://github.com/Peppson/color-picker.git"
 cd "colorPicker"
@@ -45,12 +46,15 @@ dotnet run -c Release
 
 ### Considerations
 - Auto-copy last capture to clipboard?
+- Change `ZoomView` to use GPU accelareted capture?
 - Keep sampling active with no mouse movement, to capture say a video?
 - WPF is hard-capped at 60 FPS, such a shame...
 
 <br>
 
-<a href='//www.microsoft.com/store/apps/9N5MVVBD0TGW?cid=storebadge&ocid=badge'><img src='https://developer.microsoft.com/store/badges/images/English_get-it-from-MS.png' alt='English badge' height='50px'/></a>
 
 
- -->
+<!--
+Todo 
+<a href='//'><img src='https://developer.microsoft.com/store/badges/images/English_get-it-from-MS.png' alt='Ms Store' height='50px'/></a>
+-->

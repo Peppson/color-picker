@@ -45,13 +45,9 @@
   <!-- Assets -->
   <ItemGroup>
     <None Remove="Assets\FullSizeIcon_32.ico" />
-    <None Remove="Assets\WelcomePic.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\FullSizeIcon_32.ico">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Assets\WelcomePic.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>

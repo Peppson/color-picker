@@ -283,7 +283,7 @@
                     </Viewbox>
                 </Grid>
 
-                <!--  Pause/Resume  -->
+                <!--  Start/Stop  -->
                 <Grid
                     Grid.Row="3"
                     Height="32"
@@ -294,7 +294,7 @@
                     MouseLeftButtonUp="ToggleEnabled_Click">
                     <Grid.ToolTip>
                         <TextBlock>
-                            Run/Pause capture<LineBreak />
+                            Start/Stop capture<LineBreak />
                             ● Spacebar<LineBreak />
                             ● Custom hotkey</TextBlock>
                     </Grid.ToolTip>
