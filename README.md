@@ -32,15 +32,15 @@ View and copy colors in `HEX`,`RGB`,`HSV`,`HSL` and `CMYK` formats, with zoom vi
 
 #### Build .exe from source
 ```bash
-git clone "https://github.com/Peppson/color-picker.git"
-cd "colorPicker"
+git clone "https://github.com/Peppson/color-grab.git"
+cd "color-grab/colorPicker"
 dotnet publish -c Release -r win-x64 --self-contained true -o "$HOME/Desktop"
 ```
 
 #### Run locally
 ```bash
-git clone "https://github.com/Peppson/color-picker.git"
-cd "colorPicker"
+git clone "https://github.com/Peppson/color-grab.git"
+cd "color-grab/colorPicker"
 dotnet run -c Release 
 ```
 

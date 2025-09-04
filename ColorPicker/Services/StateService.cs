@@ -55,8 +55,6 @@ public static class State
         CurrentColorType = ColorService.StringToColorType(Properties.Settings.Default.ColorType);
 
         IsEnabled = BootWithCaptureEnabled;
-
-        Console.WriteLine($"isenabled: {IsEnabled}");
     }
 
     public static void Save()
@@ -74,8 +72,6 @@ public static class State
         Properties.Settings.Default.SetZoomLevelOnStartup = SetZoomLevelOnStartup;
         Properties.Settings.Default.ZoomLevel = ZoomLevel;
         Properties.Settings.Default.ColorType = CurrentColorType.ToString();
-
-        Console.WriteLine($"bootwithcaptureenabled: {BootWithCaptureEnabled}");
 
         Properties.Settings.Default.Save();
     }
