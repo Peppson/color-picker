@@ -1,5 +1,10 @@
 
-# ColorGrab [![.NET](https://img.shields.io/badge/.NET-9.0-512BD4)](https://dotnet.microsoft.com/download) [![WPF](https://img.shields.io/badge/WPF-512BD4?logo=windows&logoColor=white)](https://learn.microsoft.com/dotnet/desktop/wpf/)  
+# ColorGrab [![.NET](https://img.shields.io/badge/.NET-9.0-512BD4)](https://dotnet.microsoft.com/download) [![WPF](https://img.shields.io/badge/WPF-512BD4?logo=windows&logoColor=white)](https://learn.microsoft.com/dotnet/desktop/wpf/)   
+
+<!--
+Todo 
+<a href='//'><img src='https://developer.microsoft.com/store/badges/images/English_get-it-from-MS.png' alt='Ms Store' height='50px'/></a>
+-->
 
 Lightweight desktop color picker that grabs any pixel color from the mouse cursor.  
 View and copy colors in `HEX`,`RGB`,`HSV`,`HSL` and `CMYK` formats, with zoom view for precise selection.  
@@ -16,7 +21,25 @@ View and copy colors in `HEX`,`RGB`,`HSV`,`HSL` and `CMYK` formats, with zoom vi
 - Persistent user settings
 
 
-## Installation 
+## Screenshots
+
+<details>
+
+<summary>Open</summary>
+
+<br>
+
+Settings  
+![Settings](/Images/Screenshots/AppSettingsPage.png)  
+
+Color formats   
+![Format menu ](/Images/Screenshots/AppMenu.png)  
+
+<br>
+
+</details>
+
+## Getting Started
 
 #### Requirements:
 - Windows
@@ -30,7 +53,7 @@ View and copy colors in `HEX`,`RGB`,`HSV`,`HSL` and `CMYK` formats, with zoom vi
 #### Download .exe
 - Download the latest release from the [Releases](https://github.com/Peppson/color-picker/releases) page  
 
-#### Build .exe from source
+#### Build from source
 ```bash
 git clone "https://github.com/Peppson/color-grab.git"
 cd "color-grab/colorPicker"
@@ -51,10 +74,3 @@ dotnet run -c Release
 - WPF is hard-capped at 60 FPS, such a shame...
 
 <br>
-
-
-
-<!--
-Todo 
-<a href='//'><img src='https://developer.microsoft.com/store/badges/images/English_get-it-from-MS.png' alt='Ms Store' height='50px'/></a>
--->
