@@ -22,22 +22,11 @@ View and copy colors in `HEX`,`RGB`,`HSV`,`HSL` and `CMYK` formats, with zoom vi
 
 
 ## Screenshots
-
-<details>
-
-<summary>Open</summary>
-
-<br>
-
-Settings  
+  
 ![Settings](/Images/Screenshots/AppSettingsPage.png)  
 
-Color formats   
 ![Format menu ](/Images/Screenshots/AppMenu.png)  
 
-<br>
-
-</details>
 
 ## Getting Started
 
